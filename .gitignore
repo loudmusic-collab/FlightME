@@ -1,0 +1,29 @@
+# Android / Gradle
+.gradle/
+build/
+local.properties
+*.iml
+.idea/
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# Firebase / secrets
+google-services.json
+.firebase/
+*-debug.log
+.runtimeconfig.json
+.env
+.env.*
+functions/.secret.local
+
+# Node
+node_modules/
+functions/lib/
+
+# OS
+.DS_Store
