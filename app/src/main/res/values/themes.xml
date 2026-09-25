@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Only used for the split second before Compose draws, so the window
+     background matches the app and doesn't flash the wrong colour. -->
+<resources>
+    <style name="Theme.FlightMe" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/window_background</item>
+    </style>
+</resources>

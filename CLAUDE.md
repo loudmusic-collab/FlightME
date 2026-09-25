@@ -26,6 +26,8 @@ Read `PLAN.md` for the architecture and build order, and `DECISIONS.md` for choi
 - Brand direction (provisional): minimal, simple lines, thin-stroke icons, colour mainly for flight status.
 
 ## Commands (fill in as the project grows)
+- Gradle needs `JAVA_HOME` set to Android Studio's JDK: `$env:JAVA_HOME="C:\Program Files\Android\Android Studio\jbr"`
+- Install on emulator/phone: `.\gradlew.bat :app:installDebug`
 - Build debug APK: `.\gradlew.bat :app:assembleDebug`
 - Unit tests: `.\gradlew.bat test`
 - Firebase emulators: `firebase emulators:start`

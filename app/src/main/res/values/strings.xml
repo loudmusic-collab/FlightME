@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FlightME</string>
+
+    <string name="tab_my_flights">My Flights</string>
+    <string name="tab_passport">Passport</string>
+    <string name="tab_settings">Settings</string>
+
+    <string name="my_flights_empty_title">No flights yet</string>
+    <string name="my_flights_empty_message">Flights you track will appear here.</string>
+    <string name="passport_empty_title">Your Passport</string>
+    <string name="passport_empty_message">Stats and a map of everywhere you\'ve flown will appear here.</string>
+    <string name="settings_empty_title">Settings</string>
+    <string name="settings_empty_message">Units, time format and theme options are coming soon.</string>
+</resources>

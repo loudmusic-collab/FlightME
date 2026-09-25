@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Match Paper / Sky in core/designsystem Color.kt -->
+    <color name="window_background">#FFFAFAF8</color>
+    <color name="ic_launcher_background">#FF2F6BD8</color>
+</resources>

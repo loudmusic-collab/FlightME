@@ -103,7 +103,7 @@ FlightME/
 
 **Key Android choices**
 
-- **Min SDK 26** (Android 8), **target/compile SDK 36** (Android 16). Live Updates only turn on for API 36 and above. Older phones get a normal ongoing notification.
+- **Min SDK 26** (Android 8), **target SDK 36** (Android 16), **compile SDK 37** (needed by current AndroidX, see DECISIONS #26). Live Updates only turn on for API 36 and above. Older phones get a normal ongoing notification.
 - **Single-activity Compose app** using Navigation Compose with type-safe routes.
 - **Hilt** for dependency injection. A build flag (`USE_MOCK_DATA`) chooses `MockFlightDataSource` or `FirebaseFlightDataSource`.
 - **Room is what the UI reads.** Firestore snapshot listeners write into Room, and the UI observes Room `Flow`s. That gives offline mode by design, not as an extra feature.
