@@ -1,6 +1,6 @@
 # FlightME: build plan
 
-> Status: **PROPOSAL, waiting for your OK.** No code has been written yet.
+> Status: **APPROVED 2026-09-25.** Owner answers are recorded in DECISIONS.md (#19–24).
 > "FlightME" is a placeholder name. Nothing here uses Flighty's name, logo, assets or distinctive UI.
 
 This document covers:
@@ -316,7 +316,7 @@ Each step ends with **✅ Test:**, which is what you check on your phone.
 - **1.5** Debug time machine: step a mock flight through its lifecycle. ✅ The timeline updates as you step.
 - **1.6** Search / add flight screen (mock search). ✅ Search "FM123", add it, and it appears in the list.
 - **1.7** Live map with MapLibre + free tiles, and a mock position moving along the route. ✅ Plane moves; the map shows OSM attribution.
-- **1.8** Local notifications + Live Updates driven by the time machine. ✅ On an Android 16 emulator, a progress notification advances. On Samsung, check the Now Bar.
+- **1.8** Local notifications + Live Updates driven by the time machine. ✅ On an Android 16 (API 36) emulator, a progress notification advances. On the S21 Ultra (Android 15), the fallback ongoing notification counts down. Now Bar testing needs a newer Samsung (see DECISIONS #23).
 - **1.9** Basic Passport stats + route map from mock history. ✅ Numbers add up for the mock data.
 - **1.10** Settings: units (km/mi), 12/24h, theme. ✅ Changing units updates the map and Passport.
 
@@ -350,7 +350,7 @@ Rules-based delay prediction → gate prediction → Connection Assistant → ai
 |---|---|---|
 | Firebase Blaze plan | Phase 3.2 | Pay-as-you-go. Free quotas still apply, so at low usage the bill is often very small. Budget alerts go on first. |
 | FlightAware AeroAPI | Phase 3.3 | Main running cost. Verify the monthly minimum and per-query/alert prices. |
-| Google Play developer account | Before any Play testing | One-off registration fee. You may already have one from your previous app. |
+| Google Play developer account | Before any Play testing | One-off registration fee. Owner has none yet. New personal accounts need about a 14-day closed test with about 12 testers before production. |
 | Domain name | v1 (email import, share links) | Needed for `@in.<domain>` forwarding and nice share URLs. |
 | LLM API | v1 email import | Small per email. Could also use Firebase AI Logic (Gemini). |
 | Inbound email service | v1 | Cloudflare Email Routing is free. Alternatives are paid. |
