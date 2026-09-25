@@ -12,4 +12,27 @@
     <string name="passport_empty_message">Stats and a map of everywhere you\'ve flown will appear here.</string>
     <string name="settings_empty_title">Settings</string>
     <string name="settings_empty_message">Units, time format and theme options are coming soon.</string>
+
+    <!-- Flight status -->
+    <string name="status_on_time">On time</string>
+    <string name="status_delayed">Delayed %1$s</string>
+    <string name="status_boarding">Boarding</string>
+    <string name="status_departed">Departed</string>
+    <string name="status_in_the_air">In the air</string>
+    <string name="status_landed">Landed</string>
+    <string name="status_arrived">Arrived</string>
+    <string name="status_cancelled">Cancelled</string>
+    <string name="status_diverted">Diverted</string>
+    <string name="status_diverted_to">Diverted to %1$s</string>
+    <!-- e.g. "In the air · 25m late" -->
+    <string name="status_phase_late">%1$s · %2$s late</string>
+
+    <!-- Durations and dates -->
+    <string name="duration_minutes">%1$dm</string>
+    <string name="duration_hours_minutes">%1$dh %2$dm</string>
+    <string name="date_today">Today</string>
+    <string name="date_tomorrow">Tomorrow</string>
+    <string name="date_yesterday">Yesterday</string>
+    <!-- Arrives on a later day, e.g. "+1" -->
+    <string name="date_day_offset">+%1$d</string>
 </resources>

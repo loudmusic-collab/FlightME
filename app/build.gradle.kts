@@ -18,6 +18,9 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "0.1.0"
+
+        // true = scripted test flights, no network. false = Firebase (Phase 2).
+        buildConfigField("boolean", "USE_MOCK_DATA", "true")
     }
 
     buildTypes {
@@ -37,17 +40,21 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
 dependencies {
     implementation(project(":core:designsystem"))
+    implementation(project(":core:data"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.hilt.android)
