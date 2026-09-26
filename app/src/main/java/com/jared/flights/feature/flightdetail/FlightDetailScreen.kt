@@ -42,6 +42,7 @@ import com.jared.flights.R
 import com.jared.flights.core.designsystem.component.EmptyState
 import com.jared.flights.core.designsystem.icon.FlightMeIcons
 import com.jared.flights.core.designsystem.theme.FlightMeTheme
+import com.jared.flights.core.data.SyncStatus
 import com.jared.flights.core.model.Connection
 import com.jared.flights.core.model.Flight
 import com.jared.flights.core.model.FlightStatus
@@ -52,6 +53,7 @@ import com.jared.flights.core.model.progressAt
 import com.jared.flights.core.model.timeline
 import com.jared.flights.ui.ConnectionRow
 import com.jared.flights.ui.FlightStatusLabel
+import com.jared.flights.ui.OfflineNote
 import com.jared.flights.ui.RouteLine
 import com.jared.flights.ui.arrivalDayOffset
 import com.jared.flights.ui.dateLabel
@@ -84,6 +86,7 @@ fun FlightDetailScreen(
                 flight = state.flight,
                 previous = state.previous,
                 next = state.next,
+                syncStatus = state.syncStatus,
                 now = state.now,
                 onFlightClick = onFlightClick,
                 onSplit = viewModel::splitFromNext,
@@ -97,6 +100,7 @@ private fun FlightDetailContent(
     flight: Flight,
     previous: Connection?,
     next: Connection?,
+    syncStatus: SyncStatus,
     now: Instant,
     onFlightClick: (flightId: String) -> Unit,
     onSplit: (nextFlightId: String) -> Unit,
@@ -117,6 +121,7 @@ private fun FlightDetailContent(
         )
         Spacer(Modifier.height(8.dp))
         FlightStatusLabel(flight)
+        OfflineNote(syncStatus, now, Modifier.padding(top = 6.dp))
 
         when {
             cancelled -> Banner(stringResource(R.string.detail_cancelled_banner))

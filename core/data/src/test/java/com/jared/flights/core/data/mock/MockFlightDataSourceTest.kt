@@ -15,7 +15,7 @@ import java.time.ZoneId
 class MockFlightDataSourceTest {
 
     private val clock = Clock.fixed(Instant.parse("2026-09-25T13:07:00Z"), ZoneId.of("Europe/London"))
-    private val flights = MockFlightDataSource(clock).buildFlights()
+    private val flights = buildMockFlights(clock)
 
     @Test fun `has about a dozen flights with unique ids`() {
         assertTrue(flights.size in 8..14)

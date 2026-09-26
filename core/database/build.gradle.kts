@@ -1,10 +1,11 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 android {
-    namespace = "com.jared.flights.core.data"
+    namespace = "com.jared.flights.core.database"
     compileSdk {
         version = release(37)
     }
@@ -19,11 +20,18 @@ android {
     }
 }
 
+// Room writes a JSON description of each database version here. Kept in git so
+// future changes can be checked and migrated properly.
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
 dependencies {
     api(project(":core:model"))
-    implementation(project(":core:database"))
-    implementation(libs.androidx.datastore.preferences)
-    api(libs.kotlinx.coroutines.core)
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

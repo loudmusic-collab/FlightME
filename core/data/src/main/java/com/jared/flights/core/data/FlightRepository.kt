@@ -1,17 +1,25 @@
 package com.jared.flights.core.data
 
+import com.jared.flights.core.database.dao.FlightDao
+import com.jared.flights.core.database.dao.SyncStateDao
+import com.jared.flights.core.database.dao.TripSplitDao
+import com.jared.flights.core.database.entity.TripSplitEntity
+import com.jared.flights.core.database.entity.toModel
 import com.jared.flights.core.model.Flight
 import com.jared.flights.core.model.Trip
 import com.jared.flights.core.model.groupIntoTrips
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
+import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** What the screens use to get flights. Hides where the data comes from. */
+/**
+ * What the screens use to get flights. Everything here is read from the
+ * phone's database, so it works offline (DECISIONS #7). [FlightSync] keeps
+ * the database up to date.
+ */
 interface FlightRepository {
     /**
      * Tracked flights: active ones first (earliest departure first),
@@ -31,31 +39,40 @@ interface FlightRepository {
     /** The trip that contains this flight, or null. */
     fun observeTripFor(flightId: String): Flow<Trip?>
 
-    /** The user says [flightId] is not a connection: it starts a new trip. */
-    fun splitTripBefore(flightId: String)
+    /** The user says [flightId] is not a connection: it starts a new trip. Saved on the phone. */
+    suspend fun splitTripBefore(flightId: String)
+
+    /** Online/offline, and when the flights were last refreshed. */
+    fun observeSyncStatus(): Flow<SyncStatus>
+
+    /** Pull-to-refresh: fetch the latest now. False if offline (saved data is kept). */
+    suspend fun refresh(): Boolean
 }
 
 @Singleton
 class DefaultFlightRepository @Inject constructor(
+    private val flightDao: FlightDao,
+    private val tripSplitDao: TripSplitDao,
+    private val syncStateDao: SyncStateDao,
     private val dataSource: FlightDataSource,
+    private val flightSync: FlightSync,
 ) : FlightRepository {
 
-    // Kept in memory for now; saved on the phone from step 1.5 (Room).
-    private val splits = MutableStateFlow<Set<String>>(emptySet())
+    private val flights: Flow<List<Flight>> = flightDao.observeAll().map { rows -> rows.map { it.toModel() } }
 
     override fun observeTrackedFlights(): Flow<List<Flight>> =
-        dataSource.observeTrackedFlights().map { flights ->
+        flights.map { flights ->
             val (finished, active) = flights.partition { it.isFinished }
             active.sortedBy { it.departure.best } +
                 finished.sortedByDescending { it.departure.best }
         }
 
     override fun observeFlight(id: String): Flow<Flight?> =
-        dataSource.observeTrackedFlights().map { flights -> flights.find { it.id == id } }
+        flightDao.observeById(id).map { it?.toModel() }
 
     override fun observeTrips(): Flow<List<Trip>> =
-        combine(dataSource.observeTrackedFlights(), splits) { flights, splitBefore ->
-            val (finished, active) = groupIntoTrips(flights, splitBefore).partition { it.isFinished }
+        combine(flights, tripSplitDao.observeSplitFlightIds()) { flights, splitBefore ->
+            val (finished, active) = groupIntoTrips(flights, splitBefore.toSet()).partition { it.isFinished }
             active.sortedBy { it.legs.first().departure.best } +
                 finished.sortedByDescending { it.legs.first().departure.best }
         }
@@ -63,7 +80,14 @@ class DefaultFlightRepository @Inject constructor(
     override fun observeTripFor(flightId: String): Flow<Trip?> =
         observeTrips().map { trips -> trips.find { trip -> trip.legs.any { it.id == flightId } } }
 
-    override fun splitTripBefore(flightId: String) {
-        splits.update { it + flightId }
+    override suspend fun splitTripBefore(flightId: String) {
+        tripSplitDao.insert(TripSplitEntity(flightId))
     }
+
+    override fun observeSyncStatus(): Flow<SyncStatus> =
+        combine(dataSource.observeOnline(), syncStateDao.observeLastSuccessAt()) { online, lastMillis ->
+            SyncStatus(isOnline = online, lastSuccessAt = lastMillis?.let(Instant::ofEpochMilli))
+        }
+
+    override suspend fun refresh(): Boolean = flightSync.refresh()
 }

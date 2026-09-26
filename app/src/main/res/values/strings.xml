@@ -39,6 +39,20 @@
 
     <string name="action_back">Back</string>
 
+    <!-- Offline -->
+    <string name="offline_never_updated">Offline · waiting for a connection</string>
+    <string name="offline_updated_just_now">Offline · last updated just now</string>
+    <!-- e.g. "Offline · last updated 12m ago" -->
+    <string name="offline_updated_ago">Offline · last updated %1$s ago</string>
+    <string name="updated_just_now">Updated just now</string>
+    <string name="refresh_failed_offline">Couldn\'t update. You\'re offline.</string>
+
+    <!-- Developer options (debug builds only) -->
+    <string name="dev_options_title">Developer options</string>
+    <string name="dev_options_subtitle">Test builds only. Not shown in the Play Store version.</string>
+    <string name="dev_simulate_offline">Simulate offline</string>
+    <string name="dev_simulate_offline_hint">Mock data stops arriving, as if there were no signal.</string>
+
     <!-- Flight detail -->
     <string name="detail_not_found_title">Flight not found</string>
     <string name="detail_not_found_message">It may no longer be tracked.</string>

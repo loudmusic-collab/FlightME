@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.jared.flights.core.data.FlightRepository
+import com.jared.flights.core.data.SyncStatus
 import com.jared.flights.core.model.Connection
 import com.jared.flights.core.model.Flight
 import com.jared.flights.navigation.FlightDetailRoute
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.time.Clock
 import java.time.Instant
 import javax.inject.Inject
@@ -27,6 +29,7 @@ sealed interface FlightDetailUiState {
         val flight: Flight,
         val previous: Connection?,
         val next: Connection?,
+        val syncStatus: SyncStatus,
         val now: Instant,
     ) : FlightDetailUiState
 }
@@ -44,8 +47,9 @@ class FlightDetailViewModel @Inject constructor(
         combine(
             repository.observeFlight(flightId),
             repository.observeTripFor(flightId),
+            repository.observeSyncStatus(),
             clockTicker(clock),
-        ) { flight, trip, now ->
+        ) { flight, trip, sync, now ->
             if (flight == null) {
                 FlightDetailUiState.NotFound
             } else {
@@ -53,6 +57,7 @@ class FlightDetailViewModel @Inject constructor(
                     flight = flight,
                     previous = trip?.connectionBefore(flightId),
                     next = trip?.connectionAfter(flightId),
+                    syncStatus = sync,
                     now = now,
                 )
             }
@@ -63,5 +68,7 @@ class FlightDetailViewModel @Inject constructor(
         )
 
     /** "These aren't connecting": the next flight becomes its own trip. */
-    fun splitFromNext(nextFlightId: String) = repository.splitTripBefore(nextFlightId)
+    fun splitFromNext(nextFlightId: String) {
+        viewModelScope.launch { repository.splitTripBefore(nextFlightId) }
+    }
 }
