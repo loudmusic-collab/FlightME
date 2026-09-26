@@ -43,6 +43,7 @@ import com.jared.flights.core.designsystem.component.EmptyState
 import com.jared.flights.core.designsystem.icon.FlightMeIcons
 import com.jared.flights.core.designsystem.theme.FlightMeTheme
 import com.jared.flights.core.data.SyncStatus
+import com.jared.flights.core.model.Airport
 import com.jared.flights.core.model.Connection
 import com.jared.flights.core.model.Flight
 import com.jared.flights.core.model.FlightStatus
@@ -51,6 +52,7 @@ import com.jared.flights.core.model.MilestoneType
 import com.jared.flights.core.model.durationBetween
 import com.jared.flights.core.model.progressAt
 import com.jared.flights.core.model.timeline
+import com.jared.flights.ui.AirportMapButton
 import com.jared.flights.ui.ConnectionRow
 import com.jared.flights.ui.FlightStatusLabel
 import com.jared.flights.ui.OfflineNote
@@ -166,9 +168,11 @@ private fun FlightDetailContent(
                     onClick = { onFlightClick(connection.inbound.id) },
                 )
                 ConnectionRow(connection, Modifier.padding(vertical = 8.dp))
+                ConnectionMapButton(connection)
             }
             next?.let { connection ->
                 ConnectionRow(connection, Modifier.padding(vertical = 8.dp))
+                ConnectionMapButton(connection)
                 LinkedFlight(
                     label = stringResource(R.string.detail_next_flight),
                     text = stringResource(
@@ -202,6 +206,8 @@ private fun FlightDetailContent(
                     stringResource(R.string.detail_terminal) to flight.departureTerminal,
                     stringResource(R.string.detail_gate) to flight.departureGate,
                 ),
+                airport = flight.origin,
+                terminal = flight.departureTerminal,
                 modifier = Modifier.weight(1f),
             )
             AirportInfo(
@@ -211,6 +217,8 @@ private fun FlightDetailContent(
                     stringResource(R.string.detail_gate) to flight.arrivalGate,
                     stringResource(R.string.detail_baggage) to flight.baggageClaim,
                 ),
+                airport = flight.divertedTo ?: flight.destination,
+                terminal = flight.arrivalTerminal,
                 modifier = Modifier.weight(1f),
             )
         }
@@ -357,7 +365,13 @@ private fun segmentLabel(from: Milestone, to: Milestone): String {
 }
 
 @Composable
-private fun AirportInfo(title: String, rows: List<Pair<String, String?>>, modifier: Modifier = Modifier) {
+private fun AirportInfo(
+    title: String,
+    rows: List<Pair<String, String?>>,
+    airport: Airport,
+    terminal: String?,
+    modifier: Modifier = Modifier,
+) {
     Column(modifier) {
         Text(title, style = MaterialTheme.typography.titleMedium)
         Spacer(Modifier.height(8.dp))
@@ -375,7 +389,21 @@ private fun AirportInfo(title: String, rows: List<Pair<String, String?>>, modifi
                 )
             }
         }
+        AirportMapButton(airport, terminal)
     }
+}
+
+/**
+ * "Map of Amsterdam airport": where you change planes. Uses the terminal you
+ * arrive at, since that's where you start walking from.
+ */
+@Composable
+private fun ConnectionMapButton(connection: Connection) {
+    AirportMapButton(
+        airport = connection.airport,
+        terminal = connection.inbound.arrivalTerminal,
+        label = stringResource(R.string.airport_map_of, connection.airport.city),
+    )
 }
 
 /** "Next flight · KL 643 to New York  →", tappable. */

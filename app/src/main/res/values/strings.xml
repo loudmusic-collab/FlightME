@@ -38,6 +38,9 @@
     <string name="date_day_offset">+%1$d</string>
 
     <string name="action_back">Back</string>
+    <string name="airport_map">Airport map</string>
+    <!-- e.g. "Map of Amsterdam airport" -->
+    <string name="airport_map_of">Map of %1$s airport</string>
 
     <!-- Offline -->
     <string name="offline_never_updated">Offline · waiting for a connection</string>

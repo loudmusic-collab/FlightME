@@ -292,7 +292,7 @@ We check the terms of each source before we write code against it. The results g
 ### v2
 - **Delay prediction (rules first):** inbound aircraft ETA + minimum turnaround for the aircraft type vs. scheduled departure, plus active FAA GDP/ground stops, plus severe METAR. Output is a risk level (Low/Med/High) with plain-language reasons. Every prediction is stored with its later outcome, which becomes the ML training set.
 - **Gate prediction:** most frequent gate for this flight number from our own `events` history.
-- **Connection Assistant:** a score from 0–100 based on layover time vs. MCT for the airport and route type (domestic/international), terminal change, whether immigration/security re-screen is needed (rules per airport and country pair), inbound delay risk, and time of day. Live "connection at risk" alerts fire when the inbound estimate crosses thresholds.
+- **Connection Assistant:** a score from 0–100 based on layover time vs. MCT for the airport and route type (domestic/international), terminal change, whether immigration/security re-screen is needed (rules per airport and country pair), inbound delay risk, and time of day. Live "connection at risk" alerts fire when the inbound estimate crosses thresholds. **Gate-to-gate walking time** (e.g. "B32 → A12, about 14 min incl. security") and an in-app terminal map, using indoor map data with gate positions. The good sources are paid licences (Atrius/LocusLabs, Mappedin) and OpenStreetMap indoor data is patchy, so **check cost with the owner first** (💷). Until then, an "Airport map" button opens Google Maps (DECISIONS #37).
 - **Airport trends:** hourly aggregates of departure/arrival delays from flights we already track.
 - **Morning Of:** a scheduled function at the local morning of travel. It combines leave-by time (user's home airport + a buffer setting), weather and risk level.
 - **Gemini integration:** the current route is Android **App Functions**. Verify at build time, as this API is evolving.
@@ -357,6 +357,7 @@ Rules-based delay prediction → gate prediction → Connection Assistant → ai
 | Inbound email service | v1 | Cloudflare Email Routing is free. Alternatives are paid. |
 | Map tiles | Only if we outgrow the free options | OpenFreeMap is free. MapTiler has a free tier. |
 | MCT dataset | v2, optional | Official MCT data is expensive. We'll start with our own. |
+| Indoor airport map data | v2, optional | For in-app terminal maps and gate-to-gate walking times. Likely a paid licence. |
 
 ---
 

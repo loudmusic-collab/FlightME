@@ -66,6 +66,17 @@ object FlightMeIcons {
         }
     }
 
+    /** Folded paper map. Used for "Airport map". */
+    val Map: ImageVector by lazy {
+        lineIcon("Map") {
+            moveTo(3f, 6f); lineTo(9f, 4f); lineTo(15f, 6f); lineTo(21f, 4f)
+            lineTo(21f, 18f); lineTo(15f, 20f); lineTo(9f, 18f); lineTo(3f, 20f)
+            close()
+            moveTo(9f, 4f); lineTo(9f, 18f)
+            moveTo(15f, 6f); lineTo(15f, 20f)
+        }
+    }
+
     /** Left arrow, for "go back". */
     val ArrowBack: ImageVector by lazy {
         lineIcon("ArrowBack") {
