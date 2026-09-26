@@ -15,6 +15,9 @@ import kotlin.reflect.KClass
 /** A single flight's detail screen (not a tab). */
 @Serializable data class FlightDetailRoute(val flightId: String)
 
+/** Search for a flight and add it (not a tab). */
+@Serializable data object AddFlightRoute
+
 /** The bottom-bar tabs, in display order. */
 enum class TopLevelDestination(
     val route: Any,

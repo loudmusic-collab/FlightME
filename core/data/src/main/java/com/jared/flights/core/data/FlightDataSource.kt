@@ -1,7 +1,9 @@
 package com.jared.flights.core.data
 
 import com.jared.flights.core.model.Flight
+import com.jared.flights.core.model.FlightNumber
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 
 /**
  * Where fresh flight data comes from. Today: [com.jared.flights.core.data.mock.MockFlightDataSource].
@@ -23,4 +25,17 @@ interface FlightDataSource {
      * Throws [java.io.IOException] if there's no connection.
      */
     suspend fun fetchTrackedFlights(): List<Flight>
+
+    /**
+     * Find flight [number] leaving on [date] (local date at the departure airport).
+     * Usually one result, none if it doesn't fly that day. Phase 2: the `searchFlights`
+     * server function, which caches results (PLAN §6). Throws IOException if offline.
+     */
+    suspend fun searchFlights(number: FlightNumber, date: LocalDate): List<Flight>
+
+    /** Start tracking a flight by id (a search result, or one just removed). Throws IOException if offline. */
+    suspend fun trackFlight(flightId: String)
+
+    /** Stop tracking a flight. Throws IOException if offline. */
+    suspend fun untrackFlight(flightId: String)
 }

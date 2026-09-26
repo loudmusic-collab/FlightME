@@ -12,6 +12,8 @@ import androidx.compose.ui.graphics.Color
 private val LightColors = lightColorScheme(
     primary = Sky,
     onPrimary = Color.White,
+    primaryContainer = Sky,
+    onPrimaryContainer = Color.White,
     secondary = InkSoft,
     onSecondary = Color.White,
     background = Paper,
@@ -30,6 +32,8 @@ private val LightColors = lightColorScheme(
 private val DarkColors = darkColorScheme(
     primary = SkyLight,
     onPrimary = Night,
+    primaryContainer = SkyLight,
+    onPrimaryContainer = Night,
     secondary = NightTextSoft,
     onSecondary = Night,
     background = Night,

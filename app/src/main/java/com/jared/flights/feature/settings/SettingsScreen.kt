@@ -12,6 +12,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -82,6 +83,15 @@ fun SettingsScreen(
                 // onCheckedChange = null: the row above handles taps.
                 Switch(checked = simulateOffline, onCheckedChange = null)
             }
+
+            Spacer(Modifier.height(8.dp))
+            Text(stringResource(R.string.dev_reset_flights), style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = stringResource(R.string.dev_reset_flights_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            OutlinedButton(onClick = viewModel::resetTestFlights) { Text(stringResource(R.string.dev_reset_flights_button)) }
 
             Spacer(Modifier.height(16.dp))
             Text(stringResource(R.string.tm_title), style = MaterialTheme.typography.bodyLarge)

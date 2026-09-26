@@ -17,6 +17,7 @@ internal object MockAirports {
     val AMS = Airport("AMS", "EHAM", "Schiphol", "Amsterdam", ZoneId.of("Europe/Amsterdam"))
     val CDG = Airport("CDG", "LFPG", "Charles de Gaulle", "Paris", ZoneId.of("Europe/Paris"))
     val FRA = Airport("FRA", "EDDF", "Frankfurt", "Frankfurt", ZoneId.of("Europe/Berlin"))
+    val BCN = Airport("BCN", "LEBL", "Barcelona–El Prat", "Barcelona", ZoneId.of("Europe/Madrid"))
     val GVA = Airport("GVA", "LSGG", "Geneva", "Geneva", ZoneId.of("Europe/Zurich"))
     val DXB = Airport("DXB", "OMDB", "Dubai International", "Dubai", ZoneId.of("Asia/Dubai"))
     val SIN = Airport("SIN", "WSSS", "Changi", "Singapore", ZoneId.of("Asia/Singapore"))

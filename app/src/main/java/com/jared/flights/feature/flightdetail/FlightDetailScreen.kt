@@ -1,5 +1,6 @@
 package com.jared.flights.feature.flightdetail
 
+import android.content.ClipData
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,10 +30,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -56,6 +63,7 @@ import com.jared.flights.core.model.durationBetween
 import com.jared.flights.core.model.progressAt
 import com.jared.flights.core.model.timeline
 import com.jared.flights.ui.AirportMapButton
+import com.jared.flights.ui.BookingReferenceDialog
 import com.jared.flights.ui.ConnectionRow
 import com.jared.flights.ui.FlightStatusLabel
 import com.jared.flights.ui.OfflineNote
@@ -66,6 +74,7 @@ import com.jared.flights.ui.dateLabel
 import com.jared.flights.ui.formatDuration
 import com.jared.flights.ui.localTime
 import com.jared.flights.ui.timeColor
+import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
 
@@ -73,10 +82,13 @@ import java.time.Instant
 fun FlightDetailScreen(
     onBack: () -> Unit,
     onFlightClick: (flightId: String) -> Unit,
+    /** Remove this flight: [flightIds] and a label like "BA 283" for the Undo message. */
+    onRemove: (flightIds: List<String>, label: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: FlightDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val bookingReference by viewModel.bookingReference.collectAsStateWithLifecycle()
     Column(modifier.fillMaxSize()) {
         IconButton(onClick = onBack, modifier = Modifier.padding(start = 4.dp, top = 4.dp)) {
             Icon(FlightMeIcons.ArrowBack, contentDescription = stringResource(R.string.action_back))
@@ -98,6 +110,9 @@ fun FlightDetailScreen(
                         now = state.now,
                         onFlightClick = onFlightClick,
                         onSplit = viewModel::splitFromNext,
+                        bookingReference = bookingReference,
+                        onSetBookingReference = viewModel::setBookingReference,
+                        onRemove = { onRemove(listOf(state.flight.id), "${state.flight.airlineIata} ${state.flight.flightNumber}") },
                     )
                 }
                 // Debug builds: step the FM 100 test flight from its own screen.
@@ -128,6 +143,9 @@ private fun FlightDetailContent(
     now: Instant,
     onFlightClick: (flightId: String) -> Unit,
     onSplit: (nextFlightId: String) -> Unit,
+    bookingReference: String?,
+    onSetBookingReference: (String?) -> Unit,
+    onRemove: () -> Unit,
 ) {
     val cancelled = flight.status == FlightStatus.CANCELLED
     Column(
@@ -174,6 +192,10 @@ private fun FlightDetailContent(
         }
         Spacer(Modifier.height(4.dp))
         SmallText(journeyFacts(flight))
+
+        // The user's own booking reference (saved on the phone only).
+        Spacer(Modifier.height(16.dp))
+        BookingReferenceRow(bookingReference, onSetBookingReference)
 
         // Connections either side (only for flights that are part of a trip)
         if (previous != null || next != null) {
@@ -243,6 +265,15 @@ private fun FlightDetailContent(
                 terminal = flight.arrivalTerminal,
                 modifier = Modifier.weight(1f),
             )
+        }
+
+        // Stop tracking this flight (Undo is offered on My Flights).
+        SectionDivider()
+        TextButton(onClick = onRemove, contentPadding = PaddingValues(horizontal = 0.dp)) {
+            val red = FlightMeTheme.statusColors.cancelled
+            Icon(FlightMeIcons.Remove, contentDescription = null, tint = red, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.width(8.dp))
+            Text(stringResource(R.string.detail_remove_flight), color = red)
         }
     }
 }
@@ -431,6 +462,57 @@ private fun ConnectionMapButton(connection: Connection) {
         terminal = connection.inbound.arrivalTerminal,
         label = stringResource(R.string.airport_map_of, connection.airport.city),
     )
+}
+
+/**
+ * "Booking reference  X7K2QP  [copy] [edit]", or "+ Add booking reference".
+ * Stored on the phone only (DECISIONS #40).
+ */
+@Composable
+private fun BookingReferenceRow(reference: String?, onSet: (String?) -> Unit) {
+    var editing by rememberSaveable { mutableStateOf(false) }
+    val clipboard = LocalClipboard.current
+    val scope = rememberCoroutineScope()
+
+    if (reference == null) {
+        TextButton(onClick = { editing = true }, contentPadding = PaddingValues(horizontal = 0.dp)) {
+            Icon(FlightMeIcons.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.width(8.dp))
+            Text(stringResource(R.string.booking_reference_add))
+        }
+    } else {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                SmallText(stringResource(R.string.booking_reference))
+                Text(reference, style = MaterialTheme.typography.titleMedium)
+            }
+            IconButton(
+                onClick = {
+                    scope.launch {
+                        clipboard.setClipEntry(ClipEntry(ClipData.newPlainText("Booking reference", reference)))
+                    }
+                },
+            ) {
+                Icon(FlightMeIcons.Copy, contentDescription = stringResource(R.string.action_copy), modifier = Modifier.size(20.dp))
+            }
+            IconButton(onClick = { editing = true }) {
+                Icon(FlightMeIcons.Edit, contentDescription = stringResource(R.string.action_edit), modifier = Modifier.size(20.dp))
+            }
+        }
+    }
+
+    if (editing) {
+        BookingReferenceDialog(
+            title = stringResource(R.string.booking_reference),
+            confirmLabel = stringResource(R.string.action_save),
+            initial = reference,
+            onConfirm = {
+                onSet(it)
+                editing = false
+            },
+            onDismiss = { editing = false },
+        )
+    }
 }
 
 /** "Next flight · KL 643 to New York  →", tappable. */

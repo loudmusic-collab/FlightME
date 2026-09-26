@@ -1,0 +1,319 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "c18a9597e5026a07f0dfff9ec8e199fd",
+    "entities": [
+      {
+        "tableName": "flights",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `airlineIata` TEXT NOT NULL, `airlineName` TEXT NOT NULL, `flightNumber` TEXT NOT NULL, `status` TEXT NOT NULL, `departureTerminal` TEXT, `departureGate` TEXT, `arrivalTerminal` TEXT, `arrivalGate` TEXT, `baggageClaim` TEXT, `aircraftType` TEXT, `updatedAt` INTEGER NOT NULL, `origin_iata` TEXT NOT NULL, `origin_icao` TEXT NOT NULL, `origin_name` TEXT NOT NULL, `origin_city` TEXT NOT NULL, `origin_timeZone` TEXT NOT NULL, `dest_iata` TEXT NOT NULL, `dest_icao` TEXT NOT NULL, `dest_name` TEXT NOT NULL, `dest_city` TEXT NOT NULL, `dest_timeZone` TEXT NOT NULL, `diverted_iata` TEXT, `diverted_icao` TEXT, `diverted_name` TEXT, `diverted_city` TEXT, `diverted_timeZone` TEXT, `boarding_scheduled` INTEGER, `boarding_estimated` INTEGER, `boarding_actual` INTEGER, `gate_out_scheduled` INTEGER NOT NULL, `gate_out_estimated` INTEGER, `gate_out_actual` INTEGER, `takeoff_scheduled` INTEGER, `takeoff_estimated` INTEGER, `takeoff_actual` INTEGER, `landing_scheduled` INTEGER, `landing_estimated` INTEGER, `landing_actual` INTEGER, `gate_in_scheduled` INTEGER NOT NULL, `gate_in_estimated` INTEGER, `gate_in_actual` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "airlineIata",
+            "columnName": "airlineIata",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "airlineName",
+            "columnName": "airlineName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flightNumber",
+            "columnName": "flightNumber",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "departureTerminal",
+            "columnName": "departureTerminal",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "departureGate",
+            "columnName": "departureGate",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "arrivalTerminal",
+            "columnName": "arrivalTerminal",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "arrivalGate",
+            "columnName": "arrivalGate",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "baggageClaim",
+            "columnName": "baggageClaim",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "aircraftType",
+            "columnName": "aircraftType",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "origin.iata",
+            "columnName": "origin_iata",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "origin.icao",
+            "columnName": "origin_icao",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "origin.name",
+            "columnName": "origin_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "origin.city",
+            "columnName": "origin_city",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "origin.timeZone",
+            "columnName": "origin_timeZone",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "destination.iata",
+            "columnName": "dest_iata",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "destination.icao",
+            "columnName": "dest_icao",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "destination.name",
+            "columnName": "dest_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "destination.city",
+            "columnName": "dest_city",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "destination.timeZone",
+            "columnName": "dest_timeZone",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "divertedTo.iata",
+            "columnName": "diverted_iata",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "divertedTo.icao",
+            "columnName": "diverted_icao",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "divertedTo.name",
+            "columnName": "diverted_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "divertedTo.city",
+            "columnName": "diverted_city",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "divertedTo.timeZone",
+            "columnName": "diverted_timeZone",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "boarding.scheduled",
+            "columnName": "boarding_scheduled",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "boarding.estimated",
+            "columnName": "boarding_estimated",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "boarding.actual",
+            "columnName": "boarding_actual",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "departure.scheduled",
+            "columnName": "gate_out_scheduled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "departure.estimated",
+            "columnName": "gate_out_estimated",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "departure.actual",
+            "columnName": "gate_out_actual",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "takeoff.scheduled",
+            "columnName": "takeoff_scheduled",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "takeoff.estimated",
+            "columnName": "takeoff_estimated",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "takeoff.actual",
+            "columnName": "takeoff_actual",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "landing.scheduled",
+            "columnName": "landing_scheduled",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "landing.estimated",
+            "columnName": "landing_estimated",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "landing.actual",
+            "columnName": "landing_actual",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "arrival.scheduled",
+            "columnName": "gate_in_scheduled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "arrival.estimated",
+            "columnName": "gate_in_estimated",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "arrival.actual",
+            "columnName": "gate_in_actual",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "trip_splits",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`flightId` TEXT NOT NULL, PRIMARY KEY(`flightId`))",
+        "fields": [
+          {
+            "fieldPath": "flightId",
+            "columnName": "flightId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "flightId"
+          ]
+        }
+      },
+      {
+        "tableName": "sync_state",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `lastSuccessAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastSuccessAt",
+            "columnName": "lastSuccessAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "bookings",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`flightId` TEXT NOT NULL, `reference` TEXT NOT NULL, PRIMARY KEY(`flightId`))",
+        "fields": [
+          {
+            "fieldPath": "flightId",
+            "columnName": "flightId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reference",
+            "columnName": "reference",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "flightId"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c18a9597e5026a07f0dfff9ec8e199fd')"
+    ]
+  }
+}

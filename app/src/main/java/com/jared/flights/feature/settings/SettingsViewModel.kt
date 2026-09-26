@@ -33,6 +33,10 @@ class SettingsViewModel @Inject constructor(
         stop = { viewModelScope.launch { timeMachine.stop() } },
     )
 
+    fun resetTestFlights() {
+        viewModelScope.launch { devSettings.resetMockTracking() }
+    }
+
     fun setSimulateOffline(on: Boolean) {
         viewModelScope.launch { devSettings.setSimulateOffline(on) }
     }

@@ -1,17 +1,22 @@
 package com.jared.flights.core.data
 
+import com.jared.flights.core.database.dao.BookingDao
 import com.jared.flights.core.database.dao.FlightDao
 import com.jared.flights.core.database.dao.SyncStateDao
 import com.jared.flights.core.database.dao.TripSplitDao
+import com.jared.flights.core.database.entity.BookingEntity
 import com.jared.flights.core.database.entity.TripSplitEntity
 import com.jared.flights.core.database.entity.toModel
 import com.jared.flights.core.model.Flight
+import com.jared.flights.core.model.FlightNumber
 import com.jared.flights.core.model.Trip
 import com.jared.flights.core.model.groupIntoTrips
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import java.io.IOException
 import java.time.Instant
+import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -47,6 +52,25 @@ interface FlightRepository {
 
     /** Pull-to-refresh: fetch the latest now. False if offline (saved data is kept). */
     suspend fun refresh(): Boolean
+
+    /** Find a flight by number and local departure date. Throws [java.io.IOException] if offline. */
+    suspend fun search(number: FlightNumber, date: LocalDate): List<Flight>
+
+    /**
+     * Start tracking flights by id (one, or every leg of a trip when undoing a removal).
+     * [bookingReference] (optional, single flight) is saved on the phone only.
+     * False if offline.
+     */
+    suspend fun track(flightIds: List<String>, bookingReference: String? = null): Boolean
+
+    /** Stop tracking these flights (one, or every leg of a trip). False if offline. */
+    suspend fun untrack(flightIds: List<String>): Boolean
+
+    /** The user's booking reference for a flight, if they entered one. */
+    fun observeBookingReference(flightId: String): Flow<String?>
+
+    /** Save, change or (with null/blank) clear a booking reference. */
+    suspend fun setBookingReference(flightId: String, reference: String?)
 }
 
 @Singleton
@@ -54,6 +78,7 @@ class DefaultFlightRepository @Inject constructor(
     private val flightDao: FlightDao,
     private val tripSplitDao: TripSplitDao,
     private val syncStateDao: SyncStateDao,
+    private val bookingDao: BookingDao,
     private val dataSource: FlightDataSource,
     private val flightSync: FlightSync,
 ) : FlightRepository {
@@ -90,4 +115,30 @@ class DefaultFlightRepository @Inject constructor(
         }
 
     override suspend fun refresh(): Boolean = flightSync.refresh()
+
+    override suspend fun search(number: FlightNumber, date: LocalDate): List<Flight> =
+        dataSource.searchFlights(number, date)
+
+    override suspend fun track(flightIds: List<String>, bookingReference: String?): Boolean = try {
+        flightIds.forEach { dataSource.trackFlight(it) }
+        if (bookingReference != null) flightIds.singleOrNull()?.let { setBookingReference(it, bookingReference) }
+        true
+    } catch (e: IOException) {
+        false
+    }
+
+    override suspend fun untrack(flightIds: List<String>): Boolean = try {
+        flightIds.forEach { dataSource.untrackFlight(it) }
+        true
+    } catch (e: IOException) {
+        false
+    }
+
+    override fun observeBookingReference(flightId: String): Flow<String?> =
+        bookingDao.observeReference(flightId)
+
+    override suspend fun setBookingReference(flightId: String, reference: String?) {
+        val tidy = reference?.trim()?.uppercase()
+        if (tidy.isNullOrEmpty()) bookingDao.delete(flightId) else bookingDao.upsert(BookingEntity(flightId, tidy))
+    }
 }

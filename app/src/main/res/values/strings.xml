@@ -38,6 +38,40 @@
     <string name="date_day_offset">+%1$d</string>
 
     <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_ok">OK</string>
+    <string name="action_save">Save</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_remove">Remove</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_edit">Edit</string>
+
+    <!-- Add a flight -->
+    <string name="add_flight_title">Add a flight</string>
+    <string name="add_flight_number">Flight number</string>
+    <string name="add_flight_number_example">e.g. BA 283</string>
+    <string name="add_flight_invalid">Enter a flight number like BA 283</string>
+    <string name="add_flight_other_date">Other date</string>
+    <string name="add_flight_search">Search</string>
+    <string name="add_flight_add">Add</string>
+    <string name="add_flight_already_added">✓ Added</string>
+    <!-- e.g. "Add FM 123?" -->
+    <string name="add_flight_confirm">Add %1$s?</string>
+    <!-- e.g. "No flights found for FM 999 on Sat 27 Sep. Check the number and date." -->
+    <string name="add_flight_none">No flights found for %1$s on %2$s. Check the number and date.</string>
+    <string name="add_flight_offline">You\'re offline. Connect and try again.</string>
+    <!-- e.g. "FM 123 added" -->
+    <string name="added_message">%1$s added</string>
+    <!-- e.g. "BA 283 removed" -->
+    <string name="removed_message">%1$s removed</string>
+    <string name="change_failed_offline">Couldn\'t save the change. You\'re offline.</string>
+
+    <!-- Booking reference -->
+    <string name="booking_reference">Booking reference</string>
+    <string name="booking_reference_optional">Booking reference (optional)</string>
+    <string name="booking_reference_hint">Saved on this phone only, for check-in. Never used to look anything up.</string>
+    <string name="booking_reference_add">Add booking reference</string>
+    <string name="detail_remove_flight">Remove flight</string>
     <string name="airport_map">Airport map</string>
     <!-- e.g. "Map of Amsterdam airport" -->
     <string name="airport_map_of">Map of %1$s airport</string>
@@ -55,6 +89,9 @@
     <string name="dev_options_subtitle">Test builds only. Not shown in the Play Store version.</string>
     <string name="dev_simulate_offline">Simulate offline</string>
     <string name="dev_simulate_offline_hint">Mock data stops arriving, as if there were no signal.</string>
+    <string name="dev_reset_flights">Test flights</string>
+    <string name="dev_reset_flights_hint">Brings back built-in test flights you removed, and clears ones you added.</string>
+    <string name="dev_reset_flights_button">Reset test flights</string>
 
     <!-- Time machine (debug builds only) -->
     <string name="tm_title">Time machine</string>

@@ -20,10 +20,13 @@ import com.jared.flights.core.model.Flight
 import com.jared.flights.core.model.FlightStatus
 import com.jared.flights.core.model.FlightTimes
 import com.jared.flights.core.data.DevSettings
+import com.jared.flights.core.data.timemachine.TIME_MACHINE_FLIGHT_ID
 import com.jared.flights.core.data.timemachine.buildTimeMachineFlight
+import com.jared.flights.core.model.FlightNumber
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
@@ -55,25 +58,63 @@ class MockFlightDataSource @Inject constructor(
     override fun observeOnline(): Flow<Boolean> =
         devSettings.simulateOffline.map { !it }.distinctUntilChanged()
 
+    private val builtInIds: Set<String> by lazy { flights.map { it.id }.toSet() }
+
     /**
-     * The scripted flights, plus the time-machine flight (FM 100) while it's
-     * switched on. Sends again every time the time machine moves.
+     * What the user is tracking: the scripted flights (minus any removed), flights
+     * added through search, and the time-machine flight (FM 100) while it's on.
+     * Sends again whenever any of those change.
      */
-    private val flightsWithTimeMachine: Flow<List<Flight>> =
-        devSettings.timeMachine.map { tm ->
-            if (tm.active) flights + buildTimeMachineFlight(tm) else flights
+    private val trackedFlights: Flow<List<Flight>> =
+        combine(devSettings.timeMachine, devSettings.mockAddedIds, devSettings.mockRemovedIds) { tm, added, removed ->
+            val builtIn = flights.filter { it.id !in removed }
+            val searched = added.mapNotNull { MockTimetable.findById(it, clock.instant()) }
+            val testFlight = if (tm.active) listOf(buildTimeMachineFlight(tm)) else emptyList()
+            builtIn + searched + testFlight
         }
 
     /** Sends the flights whenever we're (back) online or they change; nothing while offline. */
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun observeTrackedFlights(): Flow<List<Flight>> =
-        observeOnline().flatMapLatest { online -> if (online) flightsWithTimeMachine else emptyFlow() }
+        observeOnline().flatMapLatest { online -> if (online) trackedFlights else emptyFlow() }
 
     /** Pretends to call a server: short wait, then the flights (or fails if "offline"). */
     override suspend fun fetchTrackedFlights(): List<Flight> {
+        pretendNetworkCall()
+        return trackedFlights.first()
+    }
+
+    override suspend fun searchFlights(number: FlightNumber, date: LocalDate): List<Flight> {
+        pretendNetworkCall()
+        // Already tracking it? Return that one, so the screen can show "Added".
+        trackedFlights.first()
+            .find { it.ident == number.ident && it.departure.scheduled.atZone(it.origin.timeZone).toLocalDate() == date }
+            ?.let { return listOf(it) }
+        return listOfNotNull(MockTimetable.find(number, date, clock.instant()))
+    }
+
+    override suspend fun trackFlight(flightId: String) {
+        pretendNetworkCall()
+        when (flightId) {
+            TIME_MACHINE_FLIGHT_ID -> devSettings.setTimeMachineActive(true)
+            in builtInIds -> devSettings.updateMockRemovedIds { it - flightId }
+            else -> devSettings.updateMockAddedIds { it + flightId }
+        }
+    }
+
+    override suspend fun untrackFlight(flightId: String) {
+        pretendNetworkCall()
+        when (flightId) {
+            TIME_MACHINE_FLIGHT_ID -> devSettings.setTimeMachineActive(false)
+            in builtInIds -> devSettings.updateMockRemovedIds { it + flightId }
+            else -> devSettings.updateMockAddedIds { it - flightId }
+        }
+    }
+
+    /** A short wait like a real server, and fail if "Simulate offline" is on. */
+    private suspend fun pretendNetworkCall() {
         delay(FAKE_NETWORK_DELAY_MILLIS)
         if (devSettings.simulateOffline.first()) throw IOException("Simulated offline")
-        return flightsWithTimeMachine.first()
     }
 
     private companion object {

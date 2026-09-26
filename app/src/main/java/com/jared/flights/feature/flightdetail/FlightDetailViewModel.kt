@@ -72,6 +72,14 @@ class FlightDetailViewModel @Inject constructor(
         )
 
     /** "These aren't connecting": the next flight becomes its own trip. */
+    /** The user's booking reference for this flight (saved on the phone only), or null. */
+    val bookingReference: StateFlow<String?> = repository.observeBookingReference(flightId)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    fun setBookingReference(reference: String?) {
+        viewModelScope.launch { repository.setBookingReference(flightId, reference) }
+    }
+
     /** Debug builds: the time machine, for when this is the FM 100 test flight. */
     val timeMachineState: StateFlow<TimeMachineState> = timeMachine.state
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TimeMachineState())

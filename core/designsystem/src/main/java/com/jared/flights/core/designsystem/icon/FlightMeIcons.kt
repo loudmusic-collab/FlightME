@@ -77,6 +77,41 @@ object FlightMeIcons {
         }
     }
 
+    /** Plus sign. Used for "Add a flight". */
+    val Add: ImageVector by lazy {
+        lineIcon("Add") {
+            moveTo(12f, 5f); lineTo(12f, 19f)
+            moveTo(5f, 12f); lineTo(19f, 12f)
+        }
+    }
+
+    /** Bin. Used for "Remove flight". */
+    val Remove: ImageVector by lazy {
+        lineIcon("Remove") {
+            moveTo(4f, 7f); lineTo(20f, 7f)
+            moveTo(9.5f, 7f); lineTo(9.5f, 4.5f); lineTo(14.5f, 4.5f); lineTo(14.5f, 7f)
+            moveTo(6f, 7f); lineTo(7f, 20f); lineTo(17f, 20f); lineTo(18f, 7f)
+            moveTo(10f, 11f); lineTo(10f, 16f)
+            moveTo(14f, 11f); lineTo(14f, 16f)
+        }
+    }
+
+    /** Two overlapping sheets. Used for "Copy". */
+    val Copy: ImageVector by lazy {
+        lineIcon("Copy") {
+            moveTo(9f, 9f); lineTo(20f, 9f); lineTo(20f, 20f); lineTo(9f, 20f); close()
+            moveTo(5f, 15f); lineTo(4f, 15f); lineTo(4f, 4f); lineTo(15f, 4f); lineTo(15f, 5f)
+        }
+    }
+
+    /** Pencil. Used for "Edit". */
+    val Edit: ImageVector by lazy {
+        lineIcon("Edit") {
+            moveTo(4f, 20f); lineTo(4.5f, 16f); lineTo(16f, 4.5f); lineTo(19.5f, 8f); lineTo(8f, 19.5f); close()
+            moveTo(13.5f, 7f); lineTo(17f, 10.5f)
+        }
+    }
+
     /** Left arrow, for "go back". */
     val ArrowBack: ImageVector by lazy {
         lineIcon("ArrowBack") {

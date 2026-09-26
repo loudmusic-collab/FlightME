@@ -3,6 +3,7 @@ package com.jared.flights.core.database.di
 import android.content.Context
 import androidx.room.Room
 import com.jared.flights.core.database.FlightMeDatabase
+import com.jared.flights.core.database.dao.BookingDao
 import com.jared.flights.core.database.dao.FlightDao
 import com.jared.flights.core.database.dao.SyncStateDao
 import com.jared.flights.core.database.dao.TripSplitDao
@@ -30,4 +31,5 @@ internal object DatabaseModule {
     @Provides fun providesFlightDao(db: FlightMeDatabase): FlightDao = db.flightDao()
     @Provides fun providesTripSplitDao(db: FlightMeDatabase): TripSplitDao = db.tripSplitDao()
     @Provides fun providesSyncStateDao(db: FlightMeDatabase): SyncStateDao = db.syncStateDao()
+    @Provides fun providesBookingDao(db: FlightMeDatabase): BookingDao = db.bookingDao()
 }
