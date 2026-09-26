@@ -61,6 +61,34 @@
     <!-- Shown when a gate/terminal/belt isn't known yet -->
     <string name="detail_not_announced">—</string>
 
+    <string name="detail_connection">Connection</string>
+    <string name="detail_previous_flight">Previous flight</string>
+    <string name="detail_next_flight">Next flight</string>
+    <!-- e.g. "KL 1008 from London" -->
+    <string name="detail_flight_from">%1$s from %2$s</string>
+    <!-- e.g. "KL 643 to New York" -->
+    <string name="detail_flight_to">%1$s to %2$s</string>
+    <string name="detail_split_trip">Not a connection? Split trip</string>
+
+    <!-- Trips and connections -->
+    <!-- e.g. "London → Singapore" -->
+    <string name="trip_title">%1$s → %2$s</string>
+    <!-- e.g. "via Dubai" -->
+    <string name="trip_via">via %1$s</string>
+    <plurals name="trip_flight_count">
+        <item quantity="one">%1$d flight</item>
+        <item quantity="other">%1$d flights</item>
+    </plurals>
+    <!-- e.g. "2h 10m to change planes in Dubai" -->
+    <string name="connection_time">%1$s to change planes in %2$s</string>
+    <string name="connection_no_time">no time to change planes in %1$s</string>
+    <!-- e.g. "Planned 1h 25m" -->
+    <string name="connection_planned">Planned %1$s</string>
+    <string name="connection_comfortable">Comfortable</string>
+    <string name="connection_tight">Tight</string>
+    <string name="connection_at_risk">At risk</string>
+    <string name="connection_missed">Missed</string>
+
     <!-- Timeline steps: before and after they happen -->
     <string name="milestone_gate_out">Leaves gate</string>
     <string name="milestone_gate_out_done">Left gate</string>

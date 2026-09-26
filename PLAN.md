@@ -312,13 +312,14 @@ Each step ends with **✅ Test:**, which is what you check on your phone.
 - **1.1** Android scaffold: Gradle version catalogue, Compose, M3 theme, Hilt, and an empty nav graph with bottom tabs (My Flights / Passport / Settings). ✅ App launches with three tabs, and dark mode follows the system.
 - **1.2** `core/model` + `MockFlightDataSource` with about 8 scripted flights. The My Flights list shows them. ✅ List shows on-time, delayed and cancelled cards.
 - **1.3** Flight detail screen with the status timeline, gates, terminal and baggage. ✅ Delayed flight shows red estimated times.
-- **1.4** Room cache + repository (UI reads Room). ✅ Airplane mode → flights still there after an app restart.
-- **1.5** Debug time machine: step a mock flight through its lifecycle. ✅ The timeline updates as you step.
-- **1.6** Search / add flight screen (mock search). ✅ Search "FM123", add it, and it appears in the list.
-- **1.7** Live map with MapLibre + free tiles, and a mock position moving along the route. ✅ Plane moves; the map shows OSM attribution.
-- **1.8** Local notifications + Live Updates driven by the time machine. ✅ On an Android 16 (API 36) emulator, a progress notification advances. On the S21 Ultra (Android 15), the fallback ongoing notification counts down. Now Bar testing needs a newer Samsung (see DECISIONS #23).
-- **1.9** Basic Passport stats + route map from mock history. ✅ Numbers add up for the mock data.
-- **1.10** Settings: units (km/mi), 12/24h, theme. ✅ Changing units updates the map and Passport.
+- **1.4** Trips and connections: legs grouped into trips automatically, a trip card with the layover between legs, connection health (comfortable / tight / at risk / missed), next/previous-flight links on the detail screen, and "split trip". ✅ A delayed inbound flight turns its connection red. (Added 2026-09-26, DECISIONS #31–33.)
+- **1.5** Room cache + repository (UI reads Room). Trips and splits are stored too. ✅ Airplane mode → flights still there after an app restart.
+- **1.6** Debug time machine: step a mock flight through its lifecycle. ✅ The timeline updates as you step.
+- **1.7** Search / add flight screen (mock search). ✅ Search "FM123", add it, and it appears in the list.
+- **1.8** Live map with MapLibre + free tiles, and a mock position moving along the route. ✅ Plane moves; the map shows OSM attribution.
+- **1.9** Local notifications + Live Updates driven by the time machine. ✅ On an Android 16 (API 36) emulator, a progress notification advances. On the S21 Ultra (Android 15), the fallback ongoing notification counts down. Now Bar testing needs a newer Samsung (see DECISIONS #23).
+- **1.10** Basic Passport stats + route map from mock history. ✅ Numbers add up for the mock data.
+- **1.11** Settings: units (km/mi), 12/24h, theme. ✅ Changing units updates the map and Passport.
 
 ### Phase 2: Firebase on emulators (no cost)
 - **2.1** Firebase Emulator Suite config + Auth (anonymous → Google link). ✅ Sign in; the user appears in the emulator UI.

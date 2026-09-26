@@ -1,7 +1,9 @@
 package com.jared.flights.core.data.mock
 
 import com.jared.flights.core.model.DelaySeverity
+import com.jared.flights.core.model.ConnectionHealth
 import com.jared.flights.core.model.FlightStatus
+import com.jared.flights.core.model.groupIntoTrips
 import com.jared.flights.core.model.timeline
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -15,9 +17,17 @@ class MockFlightDataSourceTest {
     private val clock = Clock.fixed(Instant.parse("2026-09-25T13:07:00Z"), ZoneId.of("Europe/London"))
     private val flights = MockFlightDataSource(clock).buildFlights()
 
-    @Test fun `has about eight flights with unique ids`() {
-        assertTrue(flights.size in 8..10)
+    @Test fun `has about a dozen flights with unique ids`() {
+        assertTrue(flights.size in 8..14)
         assertEquals(flights.size, flights.map { it.id }.toSet().size)
+    }
+
+    @Test fun `groups into exactly two connecting trips, one comfortable and one at risk`() {
+        val connecting = groupIntoTrips(flights).filter { it.isConnecting }
+        assertEquals(listOf("EK2", "KL1008"), connecting.map { it.legs.first().ident }.sorted())
+        val health = connecting.associate { it.legs.first().ident to it.connections.single().health }
+        assertEquals(ConnectionHealth.COMFORTABLE, health["EK2"])
+        assertEquals(ConnectionHealth.AT_RISK, health["KL1008"])
     }
 
     @Test fun `covers on time, minor and major delays`() {

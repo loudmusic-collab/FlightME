@@ -58,6 +58,14 @@ object FlightMeIcons {
         }
     }
 
+    /** Clock face. Used for connection (layover) times. */
+    val Clock: ImageVector by lazy {
+        lineIcon("Clock") {
+            circle(12f, 12f, 9f)
+            moveTo(12f, 7f); lineTo(12f, 12f); lineTo(15.5f, 14f)
+        }
+    }
+
     /** Left arrow, for "go back". */
     val ArrowBack: ImageVector by lazy {
         lineIcon("ArrowBack") {

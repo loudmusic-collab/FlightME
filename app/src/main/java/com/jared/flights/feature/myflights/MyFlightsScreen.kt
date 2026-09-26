@@ -17,7 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jared.flights.R
 import com.jared.flights.core.designsystem.component.EmptyState
 import com.jared.flights.core.designsystem.icon.FlightMeIcons
-import com.jared.flights.core.model.Flight
+import com.jared.flights.core.model.Trip
 import java.time.Instant
 
 @Composable
@@ -30,7 +30,7 @@ fun MyFlightsScreen(
     when (val state = uiState) {
         MyFlightsUiState.Loading -> Unit
         is MyFlightsUiState.Success ->
-            if (state.flights.isEmpty()) {
+            if (state.trips.isEmpty()) {
                 EmptyState(
                     icon = FlightMeIcons.Flight,
                     title = stringResource(R.string.my_flights_empty_title),
@@ -38,14 +38,14 @@ fun MyFlightsScreen(
                     modifier = modifier,
                 )
             } else {
-                FlightList(state.flights, state.now, onFlightClick, modifier)
+                TripList(state.trips, state.now, onFlightClick, modifier)
             }
     }
 }
 
 @Composable
-private fun FlightList(
-    flights: List<Flight>,
+private fun TripList(
+    trips: List<Trip>,
     now: Instant,
     onFlightClick: (flightId: String) -> Unit,
     modifier: Modifier = Modifier,
@@ -62,8 +62,13 @@ private fun FlightList(
                 modifier = Modifier.padding(start = 4.dp, top = 8.dp, bottom = 4.dp),
             )
         }
-        items(flights, key = { it.id }) { flight ->
-            FlightCard(flight, now, onClick = { onFlightClick(flight.id) })
+        items(trips, key = { it.id }) { trip ->
+            if (trip.isConnecting) {
+                TripCard(trip, now, onFlightClick)
+            } else {
+                val flight = trip.legs.single()
+                FlightCard(flight, now, onClick = { onFlightClick(flight.id) })
+            }
         }
     }
 }

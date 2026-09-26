@@ -65,7 +65,10 @@ fun FlightMeApp(navController: NavHostController = rememberNavController()) {
             composable<PassportRoute> { PassportScreen() }
             composable<SettingsRoute> { SettingsScreen() }
             composable<FlightDetailRoute> {
-                FlightDetailScreen(onBack = { navController.popBackStack() })
+                FlightDetailScreen(
+                    onBack = { navController.popBackStack() },
+                    onFlightClick = { id -> navController.navigate(FlightDetailRoute(id)) },
+                )
             }
         }
     }

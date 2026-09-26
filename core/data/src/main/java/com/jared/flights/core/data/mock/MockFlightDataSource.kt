@@ -12,7 +12,9 @@ import com.jared.flights.core.data.mock.MockAirports.JFK
 import com.jared.flights.core.data.mock.MockAirports.LAX
 import com.jared.flights.core.data.mock.MockAirports.LGW
 import com.jared.flights.core.data.mock.MockAirports.LHR
+import com.jared.flights.core.data.mock.MockAirports.LPL
 import com.jared.flights.core.data.mock.MockAirports.MAN
+import com.jared.flights.core.data.mock.MockAirports.SIN
 import com.jared.flights.core.data.mock.MockAirports.STN
 import com.jared.flights.core.model.Flight
 import com.jared.flights.core.model.FlightStatus
@@ -98,32 +100,69 @@ class MockFlightDataSource @Inject constructor(
             ),
             // In the air, on time (5 min late on arrival).
             Flight(
-                id = "LH921-mock", airlineIata = "LH", airlineName = "Lufthansa",
-                flightNumber = "921", origin = FRA, destination = LHR,
+                id = "LH946-mock", airlineIata = "LH", airlineName = "Lufthansa",
+                flightNumber = "946", origin = FRA, destination = MAN,
                 departure = act(-55, -50), takeoff = act(-43, -38),
                 landing = est(38, 43), arrival = est(45, 50),
                 status = FlightStatus.EN_ROUTE,
-                departureTerminal = "1", departureGate = "A26", arrivalTerminal = "2",
+                departureTerminal = "1", departureGate = "A26", arrivalTerminal = "1",
                 aircraftType = "Airbus A321",
             ),
             // In the air, running early.
             Flight(
-                id = "EK1-mock", airlineIata = "EK", airlineName = "Emirates",
-                flightNumber = "1", origin = DXB, destination = LHR,
+                id = "EK17-mock", airlineIata = "EK", airlineName = "Emirates",
+                flightNumber = "17", origin = DXB, destination = MAN,
                 departure = act(-400, -405), takeoff = act(-385, -388),
                 landing = est(50, 30), arrival = est(60, 40),
                 status = FlightStatus.EN_ROUTE,
-                departureTerminal = "3", departureGate = "A12", arrivalTerminal = "3",
+                departureTerminal = "3", departureGate = "A12", arrivalTerminal = "2",
                 aircraftType = "Airbus A380",
             ),
-            // Diverted to Stansted.
+            // Diverted to Liverpool.
             Flight(
-                id = "KL1007-mock", airlineIata = "KL", airlineName = "KLM",
-                flightNumber = "1007", origin = AMS, destination = LHR,
+                id = "KL1071-mock", airlineIata = "KL", airlineName = "KLM",
+                flightNumber = "1071", origin = AMS, destination = MAN,
                 departure = act(-60, -45), takeoff = act(-50, -35),
                 landing = est(8, 23), arrival = est(15, 30),
                 status = FlightStatus.DIVERTED,
-                divertedTo = STN, departureGate = "D6", aircraftType = "Embraer 190",
+                divertedTo = LPL, departureGate = "D6", aircraftType = "Embraer 190",
+            ),
+
+            // ---- Trip: London → Singapore via Dubai, comfortable 2h 10m connection ----
+            Flight(
+                id = "EK2-mock", airlineIata = "EK", airlineName = "Emirates",
+                flightNumber = "2", origin = LHR, destination = DXB,
+                departure = est(240, 240), takeoff = est(255, 255),
+                landing = est(645, 645), arrival = est(655, 655),
+                status = FlightStatus.SCHEDULED,
+                departureTerminal = "3", arrivalTerminal = "3", aircraftType = "Airbus A380",
+            ),
+            Flight(
+                id = "EK432-mock", airlineIata = "EK", airlineName = "Emirates",
+                flightNumber = "432", origin = DXB, destination = SIN,
+                departure = est(785, 785), takeoff = est(800, 800),
+                landing = est(1220, 1220), arrival = est(1230, 1230),
+                status = FlightStatus.SCHEDULED,
+                departureTerminal = "3", arrivalTerminal = "1", aircraftType = "Boeing 777-300ER",
+            ),
+
+            // ---- Trip: London → New York via Amsterdam, first leg 40 min late: connection at risk ----
+            // Planned 1h 25m to change planes; the delay cuts it to 45 min.
+            Flight(
+                id = "KL1008-mock", airlineIata = "KL", airlineName = "KLM",
+                flightNumber = "1008", origin = LHR, destination = AMS,
+                departure = est(20, 60), takeoff = est(32, 72),
+                landing = est(78, 118), arrival = est(85, 125),
+                status = FlightStatus.SCHEDULED,
+                departureTerminal = "4", aircraftType = "Embraer 190",
+            ),
+            Flight(
+                id = "KL643-mock", airlineIata = "KL", airlineName = "KLM",
+                flightNumber = "643", origin = AMS, destination = JFK,
+                departure = est(170, 170), takeoff = est(185, 185),
+                landing = est(670, 670), arrival = est(680, 680),
+                status = FlightStatus.SCHEDULED,
+                arrivalTerminal = "4", aircraftType = "Boeing 777-200",
             ),
             // Arrived, 50 min late, bags on belt 4.
             Flight(

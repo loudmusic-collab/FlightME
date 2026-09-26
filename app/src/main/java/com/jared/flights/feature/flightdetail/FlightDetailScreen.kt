@@ -2,6 +2,8 @@ package com.jared.flights.feature.flightdetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,10 +25,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -37,6 +42,7 @@ import com.jared.flights.R
 import com.jared.flights.core.designsystem.component.EmptyState
 import com.jared.flights.core.designsystem.icon.FlightMeIcons
 import com.jared.flights.core.designsystem.theme.FlightMeTheme
+import com.jared.flights.core.model.Connection
 import com.jared.flights.core.model.Flight
 import com.jared.flights.core.model.FlightStatus
 import com.jared.flights.core.model.Milestone
@@ -44,6 +50,7 @@ import com.jared.flights.core.model.MilestoneType
 import com.jared.flights.core.model.durationBetween
 import com.jared.flights.core.model.progressAt
 import com.jared.flights.core.model.timeline
+import com.jared.flights.ui.ConnectionRow
 import com.jared.flights.ui.FlightStatusLabel
 import com.jared.flights.ui.RouteLine
 import com.jared.flights.ui.arrivalDayOffset
@@ -57,6 +64,7 @@ import java.time.Instant
 @Composable
 fun FlightDetailScreen(
     onBack: () -> Unit,
+    onFlightClick: (flightId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: FlightDetailViewModel = hiltViewModel(),
 ) {
@@ -72,13 +80,27 @@ fun FlightDetailScreen(
                 title = stringResource(R.string.detail_not_found_title),
                 message = stringResource(R.string.detail_not_found_message),
             )
-            is FlightDetailUiState.Success -> FlightDetailContent(state.flight, state.now)
+            is FlightDetailUiState.Success -> FlightDetailContent(
+                flight = state.flight,
+                previous = state.previous,
+                next = state.next,
+                now = state.now,
+                onFlightClick = onFlightClick,
+                onSplit = viewModel::splitFromNext,
+            )
         }
     }
 }
 
 @Composable
-private fun FlightDetailContent(flight: Flight, now: Instant) {
+private fun FlightDetailContent(
+    flight: Flight,
+    previous: Connection?,
+    next: Connection?,
+    now: Instant,
+    onFlightClick: (flightId: String) -> Unit,
+    onSplit: (nextFlightId: String) -> Unit,
+) {
     val cancelled = flight.status == FlightStatus.CANCELLED
     Column(
         Modifier
@@ -123,6 +145,42 @@ private fun FlightDetailContent(flight: Flight, now: Instant) {
         }
         Spacer(Modifier.height(4.dp))
         SmallText(journeyFacts(flight))
+
+        // Connections either side (only for flights that are part of a trip)
+        if (previous != null || next != null) {
+            SectionDivider()
+            Text(stringResource(R.string.detail_connection), style = MaterialTheme.typography.titleMedium)
+            previous?.let { connection ->
+                LinkedFlight(
+                    label = stringResource(R.string.detail_previous_flight),
+                    text = stringResource(
+                        R.string.detail_flight_from,
+                        "${connection.inbound.airlineIata} ${connection.inbound.flightNumber}",
+                        connection.inbound.origin.city,
+                    ),
+                    onClick = { onFlightClick(connection.inbound.id) },
+                )
+                ConnectionRow(connection, Modifier.padding(vertical = 8.dp))
+            }
+            next?.let { connection ->
+                ConnectionRow(connection, Modifier.padding(vertical = 8.dp))
+                LinkedFlight(
+                    label = stringResource(R.string.detail_next_flight),
+                    text = stringResource(
+                        R.string.detail_flight_to,
+                        "${connection.outbound.airlineIata} ${connection.outbound.flightNumber}",
+                        connection.outbound.destination.city,
+                    ),
+                    onClick = { onFlightClick(connection.outbound.id) },
+                )
+                TextButton(
+                    onClick = { onSplit(connection.outbound.id) },
+                    contentPadding = PaddingValues(horizontal = 0.dp),
+                ) {
+                    Text(stringResource(R.string.detail_split_trip))
+                }
+            }
+        }
 
         // Timeline
         SectionDivider()
@@ -312,6 +370,32 @@ private fun AirportInfo(title: String, rows: List<Pair<String, String?>>, modifi
                 )
             }
         }
+    }
+}
+
+/** "Next flight · KL 643 to New York  →", tappable. */
+@Composable
+private fun LinkedFlight(label: String, text: String, onClick: () -> Unit) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.medium)
+            .clickable(onClick = onClick)
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            SmallText(label)
+            Text(text, style = MaterialTheme.typography.bodyLarge)
+        }
+        Icon(
+            imageVector = FlightMeIcons.ArrowBack,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier
+                .size(20.dp)
+                .rotate(180f),
+        )
     }
 }
 

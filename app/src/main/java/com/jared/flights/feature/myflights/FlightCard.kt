@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -60,41 +61,52 @@ fun FlightCard(
         colors = CardDefaults.cardColors(containerColor = cardColor),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
     ) {
-        Column(Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "${flight.airlineIata} ${flight.flightNumber}",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.weight(1f),
-                )
-                FlightStatusLabel(flight)
-            }
+        FlightSummary(flight, now, cardColor, Modifier.padding(16.dp))
+    }
+}
+
+/** The inside of a flight card. Also used for each leg of a trip card. */
+@Composable
+fun FlightSummary(
+    flight: Flight,
+    now: Instant,
+    backgroundColor: Color,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = listOfNotNull(flight.airlineName, flight.aircraftType).joinToString(" · "),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                text = "${flight.airlineIata} ${flight.flightNumber}",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.weight(1f),
             )
-            Spacer(Modifier.height(12.dp))
-            RouteLine(flight.origin, flight.destination, flight.progressAt(now), cardColor)
-            Spacer(Modifier.height(4.dp))
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                TimeColumn(
-                    times = flight.departure,
-                    airport = flight.origin,
-                    dateLabel = dateLabel(flight.departure.best, flight.origin.timeZone, now),
-                    cancelled = flight.status == FlightStatus.CANCELLED,
-                    alignment = Alignment.Start,
-                )
-                TimeColumn(
-                    times = flight.arrival,
-                    airport = flight.destination,
-                    dateLabel = arrivalDayOffset(flight),
-                    cancelled = flight.status == FlightStatus.CANCELLED,
-                    alignment = Alignment.End,
-                )
-            }
+            FlightStatusLabel(flight)
+        }
+        Text(
+            text = listOfNotNull(flight.airlineName, flight.aircraftType).joinToString(" · "),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Spacer(Modifier.height(12.dp))
+        RouteLine(flight.origin, flight.destination, flight.progressAt(now), backgroundColor)
+        Spacer(Modifier.height(4.dp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            TimeColumn(
+                times = flight.departure,
+                airport = flight.origin,
+                dateLabel = dateLabel(flight.departure.best, flight.origin.timeZone, now),
+                cancelled = flight.status == FlightStatus.CANCELLED,
+                alignment = Alignment.Start,
+            )
+            TimeColumn(
+                times = flight.arrival,
+                airport = flight.destination,
+                dateLabel = arrivalDayOffset(flight),
+                cancelled = flight.status == FlightStatus.CANCELLED,
+                alignment = Alignment.End,
+            )
         }
     }
 }

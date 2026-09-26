@@ -28,6 +28,19 @@ class DefaultFlightRepositoryTest {
         assertEquals(active.sortedBy { it.departure.best }, active)
     }
 
+    @Test fun `trips put connecting legs together`() = runBlocking {
+        val trip = repository.observeTripFor("EK432-mock").first()
+        assertEquals(listOf("EK2", "EK432"), trip?.legs?.map { it.ident })
+    }
+
+    @Test fun `splitting a trip makes two trips`() = runBlocking {
+        val before = repository.observeTrips().first().size
+        repository.splitTripBefore("EK432-mock")
+        val after = repository.observeTrips().first()
+        assertEquals(before + 1, after.size)
+        assertEquals(listOf("EK432"), repository.observeTripFor("EK432-mock").first()?.legs?.map { it.ident })
+    }
+
     @Test fun `a single flight can be found by id`() = runBlocking {
         assertEquals("VS3", repository.observeFlight("VS3-mock").first()?.ident)
         assertEquals(null, repository.observeFlight("nope").first())
