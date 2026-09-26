@@ -58,6 +58,14 @@ object FlightMeIcons {
         }
     }
 
+    /** Left arrow, for "go back". */
+    val ArrowBack: ImageVector by lazy {
+        lineIcon("ArrowBack") {
+            moveTo(19f, 12f); lineTo(5f, 12f)
+            moveTo(11f, 6f); lineTo(5f, 12f); lineTo(11f, 18f)
+        }
+    }
+
     /** Three sliders. Used for Settings. */
     val Sliders: ImageVector by lazy {
         lineIcon("Sliders") {

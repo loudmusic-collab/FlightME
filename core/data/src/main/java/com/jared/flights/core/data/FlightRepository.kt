@@ -12,6 +12,9 @@ interface FlightRepository {
      * then finished ones (most recent first).
      */
     fun observeTrackedFlights(): Flow<List<Flight>>
+
+    /** One tracked flight by id, or null if it isn't tracked. */
+    fun observeFlight(id: String): Flow<Flight?>
 }
 
 class DefaultFlightRepository @Inject constructor(
@@ -24,4 +27,7 @@ class DefaultFlightRepository @Inject constructor(
             active.sortedBy { it.departure.best } +
                 finished.sortedByDescending { it.departure.best }
         }
+
+    override fun observeFlight(id: String): Flow<Flight?> =
+        dataSource.observeTrackedFlights().map { flights -> flights.find { it.id == id } }
 }

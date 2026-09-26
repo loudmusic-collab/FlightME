@@ -28,6 +28,11 @@ class DefaultFlightRepositoryTest {
         assertEquals(active.sortedBy { it.departure.best }, active)
     }
 
+    @Test fun `a single flight can be found by id`() = runBlocking {
+        assertEquals("VS3", repository.observeFlight("VS3-mock").first()?.ident)
+        assertEquals(null, repository.observeFlight("nope").first())
+    }
+
     @Test fun `finished flights are most recent first`() = runBlocking {
         val finished = repository.observeTrackedFlights().first().filter { it.isFinished }
         assertTrue(finished.size >= 2)

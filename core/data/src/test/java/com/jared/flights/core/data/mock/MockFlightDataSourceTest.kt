@@ -2,6 +2,7 @@ package com.jared.flights.core.data.mock
 
 import com.jared.flights.core.model.DelaySeverity
 import com.jared.flights.core.model.FlightStatus
+import com.jared.flights.core.model.timeline
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -40,5 +41,27 @@ class MockFlightDataSourceTest {
 
     @Test fun `every flight arrives after it departs`() {
         flights.forEach { assertTrue(it.ident, it.arrival.scheduled > it.departure.scheduled) }
+    }
+
+    @Test fun `milestones are in time order`() {
+        flights.forEach { flight ->
+            val scheduled = flight.timeline.map { it.times.scheduled }
+            assertEquals(flight.ident, scheduled.sorted(), scheduled)
+            val best = flight.timeline.map { it.times.best }
+            assertEquals(flight.ident, best.sorted(), best)
+        }
+    }
+
+    @Test fun `done milestones match the status`() {
+        flights.forEach { flight ->
+            val done = flight.timeline.map { it.done }
+            val expected = when (flight.status) {
+                FlightStatus.SCHEDULED, FlightStatus.BOARDING, FlightStatus.CANCELLED -> listOf(false, false, false, false)
+                FlightStatus.EN_ROUTE, FlightStatus.DIVERTED -> listOf(true, true, false, false)
+                FlightStatus.ARRIVED -> listOf(true, true, true, true)
+                else -> done
+            }
+            assertEquals(flight.ident, expected, done)
+        }
     }
 }

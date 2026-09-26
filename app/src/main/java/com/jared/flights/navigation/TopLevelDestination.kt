@@ -12,6 +12,9 @@ import kotlin.reflect.KClass
 @Serializable data object PassportRoute
 @Serializable data object SettingsRoute
 
+/** A single flight's detail screen (not a tab). */
+@Serializable data class FlightDetailRoute(val flightId: String)
+
 /** The bottom-bar tabs, in display order. */
 enum class TopLevelDestination(
     val route: Any,

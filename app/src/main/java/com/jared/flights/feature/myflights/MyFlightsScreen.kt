@@ -22,6 +22,7 @@ import java.time.Instant
 
 @Composable
 fun MyFlightsScreen(
+    onFlightClick: (flightId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MyFlightsViewModel = hiltViewModel(),
 ) {
@@ -37,13 +38,18 @@ fun MyFlightsScreen(
                     modifier = modifier,
                 )
             } else {
-                FlightList(state.flights, state.now, modifier)
+                FlightList(state.flights, state.now, onFlightClick, modifier)
             }
     }
 }
 
 @Composable
-private fun FlightList(flights: List<Flight>, now: Instant, modifier: Modifier = Modifier) {
+private fun FlightList(
+    flights: List<Flight>,
+    now: Instant,
+    onFlightClick: (flightId: String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
@@ -57,7 +63,7 @@ private fun FlightList(flights: List<Flight>, now: Instant, modifier: Modifier =
             )
         }
         items(flights, key = { it.id }) { flight ->
-            FlightCard(flight, now)
+            FlightCard(flight, now, onClick = { onFlightClick(flight.id) })
         }
     }
 }

@@ -21,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.jared.flights.feature.flightdetail.FlightDetailScreen
 import com.jared.flights.feature.myflights.MyFlightsScreen
 import com.jared.flights.feature.passport.PassportScreen
 import com.jared.flights.feature.settings.SettingsScreen
@@ -30,19 +31,24 @@ import com.jared.flights.feature.settings.SettingsScreen
 fun FlightMeApp(navController: NavHostController = rememberNavController()) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
+    // Tabs show on the three main screens only; detail screens are full screen.
+    val showTabs = currentDestination == null ||
+        TopLevelDestination.entries.any { currentDestination.isOn(it) }
 
     Scaffold(
         bottomBar = {
-            Column {
-                HorizontalDivider()
-                NavigationBar {
-                    TopLevelDestination.entries.forEach { destination ->
-                        NavigationBarItem(
-                            selected = currentDestination.isOn(destination),
-                            onClick = { navController.navigateToTab(destination) },
-                            icon = { Icon(destination.icon, contentDescription = null) },
-                            label = { Text(stringResource(destination.label)) },
-                        )
+            if (showTabs) {
+                Column {
+                    HorizontalDivider()
+                    NavigationBar {
+                        TopLevelDestination.entries.forEach { destination ->
+                            NavigationBarItem(
+                                selected = currentDestination.isOn(destination),
+                                onClick = { navController.navigateToTab(destination) },
+                                icon = { Icon(destination.icon, contentDescription = null) },
+                                label = { Text(stringResource(destination.label)) },
+                            )
+                        }
                     }
                 }
             }
@@ -53,9 +59,14 @@ fun FlightMeApp(navController: NavHostController = rememberNavController()) {
             startDestination = MyFlightsRoute,
             modifier = Modifier.padding(innerPadding),
         ) {
-            composable<MyFlightsRoute> { MyFlightsScreen() }
+            composable<MyFlightsRoute> {
+                MyFlightsScreen(onFlightClick = { id -> navController.navigate(FlightDetailRoute(id)) })
+            }
             composable<PassportRoute> { PassportScreen() }
             composable<SettingsRoute> { SettingsScreen() }
+            composable<FlightDetailRoute> {
+                FlightDetailScreen(onBack = { navController.popBackStack() })
+            }
         }
     }
 }

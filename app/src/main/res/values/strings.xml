@@ -29,10 +29,52 @@
 
     <!-- Durations and dates -->
     <string name="duration_minutes">%1$dm</string>
+    <string name="duration_hours">%1$dh</string>
     <string name="duration_hours_minutes">%1$dh %2$dm</string>
     <string name="date_today">Today</string>
     <string name="date_tomorrow">Tomorrow</string>
     <string name="date_yesterday">Yesterday</string>
     <!-- Arrives on a later day, e.g. "+1" -->
     <string name="date_day_offset">+%1$d</string>
+
+    <string name="action_back">Back</string>
+
+    <!-- Flight detail -->
+    <string name="detail_not_found_title">Flight not found</string>
+    <string name="detail_not_found_message">It may no longer be tracked.</string>
+    <string name="detail_cancelled_banner">This flight has been cancelled.</string>
+    <!-- e.g. "Diverted to Stansted (STN)" -->
+    <string name="detail_diverted_banner">Diverted to %1$s (%2$s)</string>
+    <!-- e.g. "8h flight" -->
+    <string name="detail_flight_length">%1$s flight</string>
+    <string name="detail_same_time_zone">Same time zone</string>
+    <!-- e.g. "New York is 5h behind" -->
+    <string name="detail_time_behind">%1$s is %2$s behind</string>
+    <string name="detail_time_ahead">%1$s is %2$s ahead</string>
+    <string name="detail_timeline">Timeline</string>
+    <!-- e.g. "Departure · LHR" -->
+    <string name="detail_departure">Departure · %1$s</string>
+    <string name="detail_arrival">Arrival · %1$s</string>
+    <string name="detail_terminal">Terminal</string>
+    <string name="detail_gate">Gate</string>
+    <string name="detail_baggage">Baggage</string>
+    <!-- Shown when a gate/terminal/belt isn't known yet -->
+    <string name="detail_not_announced">—</string>
+
+    <!-- Timeline steps: before and after they happen -->
+    <string name="milestone_gate_out">Leaves gate</string>
+    <string name="milestone_gate_out_done">Left gate</string>
+    <string name="milestone_takeoff">Takes off</string>
+    <string name="milestone_takeoff_done">Took off</string>
+    <string name="milestone_landing">Lands</string>
+    <string name="milestone_landing_done">Landed</string>
+    <string name="milestone_gate_in">Arrives at gate</string>
+    <string name="milestone_gate_in_done">Arrived at gate</string>
+    <string name="time_actual">Actual</string>
+    <string name="time_estimated">Estimated</string>
+    <string name="time_scheduled">Scheduled</string>
+    <!-- Between timeline steps -->
+    <string name="segment_taxi">%1$s taxi</string>
+    <string name="segment_in_air">%1$s in the air</string>
+    <string name="segment_gate_to_gate">%1$s gate to gate</string>
 </resources>
