@@ -1,6 +1,17 @@
 package com.jared.flights.navigation
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -42,7 +53,11 @@ import kotlinx.coroutines.launch
 
 /** App shell: the bottom tab bar, the "+" button, messages, and the area where the current screen is shown. */
 @Composable
-fun FlightMeApp(navController: NavHostController = rememberNavController()) {
+fun FlightMeApp(
+    flightToOpen: String? = null,
+    onFlightOpened: () -> Unit = {},
+    navController: NavHostController = rememberNavController(),
+) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
     // Tabs show on the three main screens only; other screens are full screen.
@@ -53,6 +68,19 @@ fun FlightMeApp(navController: NavHostController = rememberNavController()) {
     // One message bar for the whole app, so messages survive moving between screens.
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val shell: AppShellViewModel = hiltViewModel()
+    var askNotifications by remember { mutableStateOf(false) }
+    // Android shows its own "Allow notifications?" box; nothing to do with the answer here.
+    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
+
+    // A notification was tapped: open that flight.
+    LaunchedEffect(flightToOpen) {
+        flightToOpen?.let {
+            navController.navigate(FlightDetailRoute(it))
+            onFlightOpened()
+        }
+    }
     val addedTemplate = stringResource(R.string.added_message)
     val changeFailed = stringResource(R.string.change_failed_offline)
 
@@ -125,12 +153,48 @@ fun FlightMeApp(navController: NavHostController = rememberNavController()) {
                     onBack = { navController.popBackStack() },
                     onAdded = { label ->
                         navController.popBackStack()
-                        scope.launch { snackbarHostState.showSnackbar(addedTemplate.format(label)) }
+                        scope.launch {
+                            snackbarHostState.showSnackbar(addedTemplate.format(label))
+                        }
+                        // First flight added: a good moment to ask about notifications.
+                        scope.launch {
+                            val needed = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                                ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
+                                PackageManager.PERMISSION_GRANTED
+                            if (needed && shell.shouldAskForNotifications()) askNotifications = true
+                        }
                     },
                     onOfflineMessage = { scope.launch { snackbarHostState.showSnackbar(changeFailed) } },
                 )
             }
         }
+    }
+
+    // One-time "allow notifications?" explanation before Android's own permission question.
+    if (askNotifications) {
+        AlertDialog(
+            onDismissRequest = { askNotifications = false },
+            icon = { Icon(FlightMeIcons.Flight, contentDescription = null) },
+            title = { Text(stringResource(R.string.notif_prompt_title)) },
+            text = { Text(stringResource(R.string.notif_prompt_text)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        askNotifications = false
+                        shell.markNotificationPromptShown()
+                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    },
+                ) { Text(stringResource(R.string.notif_prompt_allow)) }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        askNotifications = false
+                        shell.markNotificationPromptShown()
+                    },
+                ) { Text(stringResource(R.string.notif_prompt_not_now)) }
+            },
+        )
     }
 }
 

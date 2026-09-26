@@ -21,7 +21,7 @@ class LivePositionTrackerTest {
         val flightDao = FakeFlightDao()
         val syncDao = FakeSyncStateDao()
         val source = FakeFlightDataSource(flights, online = false)
-        val sync = FlightSync(source, flightDao, syncDao, clock, CoroutineScope(Dispatchers.Unconfined))
+        val sync = FlightSync(source, flightDao, syncDao, FakeTripSplitDao(), clock, CoroutineScope(Dispatchers.Unconfined))
         sync.save(flights) // saved earlier, while online
         val repo = DefaultFlightRepository(flightDao, FakeTripSplitDao(), syncDao, FakeBookingDao(), source, sync)
 

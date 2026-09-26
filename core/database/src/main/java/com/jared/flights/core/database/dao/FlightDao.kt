@@ -13,6 +13,10 @@ abstract class FlightDao {
     @Query("SELECT * FROM flights")
     abstract fun observeAll(): Flow<List<FlightEntity>>
 
+    /** Everything saved right now (one-off read, used to spot what changed). */
+    @Query("SELECT * FROM flights")
+    abstract suspend fun getAll(): List<FlightEntity>
+
     @Query("SELECT * FROM flights WHERE id = :id")
     abstract fun observeById(id: String): Flow<FlightEntity?>
 

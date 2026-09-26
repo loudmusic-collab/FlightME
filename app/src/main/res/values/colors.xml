@@ -3,4 +3,7 @@
     <!-- Match Paper / Sky in core/designsystem Color.kt -->
     <color name="window_background">#FFFAFAF8</color>
     <color name="ic_launcher_background">#FF2F6BD8</color>
+    <!-- Live Update progress bar: time on the ground, and time in the air -->
+    <color name="live_ground">#FF9AA0A6</color>
+    <color name="live_air">#FF2F6BD8</color>
 </resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Status-bar icon for FlightME notifications: solid white plane (Android tints it). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,2.5C12.8,2.5 13.3,3.3 13.3,4.5L13.3,9.3L21,13.5L21,15.3L13.3,12.8L13.3,17.8L15.8,19.7L15.8,21.2L12,20.2L8.2,21.2L8.2,19.7L10.7,17.8L10.7,12.8L3,15.3L3,13.5L10.7,9.3L10.7,4.5C10.7,3.3 11.2,2.5 12,2.5Z" />
+</vector>

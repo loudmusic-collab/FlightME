@@ -32,12 +32,12 @@ class DefaultFlightRepositoryTest {
         sourceFlights: List<Flight> = mockFlights,
         source: FakeFlightDataSource = FakeFlightDataSource(sourceFlights, online),
     ): DefaultFlightRepository {
-        val sync = FlightSync(source, flightDao, syncDao, clock, CoroutineScope(Dispatchers.Unconfined))
+        val sync = FlightSync(source, flightDao, syncDao, splitDao, clock, CoroutineScope(Dispatchers.Unconfined))
         return DefaultFlightRepository(flightDao, splitDao, syncDao, bookingDao, source, sync)
     }
 
     private val sync = FlightSync(
-        FakeFlightDataSource(mockFlights), flightDao, syncDao, clock, CoroutineScope(Dispatchers.Unconfined),
+        FakeFlightDataSource(mockFlights), flightDao, syncDao, splitDao, clock, CoroutineScope(Dispatchers.Unconfined),
     )
 
     /** Put the mock flights into the (fake) database, like a sync would. */

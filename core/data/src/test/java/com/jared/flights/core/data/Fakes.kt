@@ -30,6 +30,7 @@ class FakeFlightDao : FlightDao() {
     override suspend fun upsertAll(flights: List<FlightEntity>) = rows.update { it + flights.associateBy { f -> f.id } }
     override suspend fun deleteAllExcept(keepIds: List<String>) = rows.update { it.filterKeys { id -> id in keepIds } }
     override suspend fun deleteAll() = rows.update { emptyMap() }
+    override suspend fun getAll(): List<FlightEntity> = rows.value.values.toList()
 }
 
 class FakeTripSplitDao : TripSplitDao {

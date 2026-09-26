@@ -38,6 +38,70 @@
     <string name="date_day_offset">+%1$d</string>
 
     <string name="action_back">Back</string>
+
+    <!-- Notifications -->
+    <string name="notif_prompt_title">Get flight alerts?</string>
+    <string name="notif_prompt_text">FlightME can tell you about gate changes, delays, boarding and connections, and show your journey\'s progress.</string>
+    <string name="notif_prompt_allow">Allow</string>
+    <string name="notif_prompt_not_now">Not now</string>
+    <string name="channel_alerts">Flight alerts</string>
+    <string name="channel_alerts_description">Gate changes, delays, boarding, cancellations and connections.</string>
+    <string name="channel_live">Journey progress</string>
+    <string name="channel_live_description">The ongoing notification during your journey (Live Update on Android 16).</string>
+
+    <!-- Alerts. Titles like "BA 283 delayed" -->
+    <string name="alert_delayed_title">%1$s delayed</string>
+    <!-- e.g. "Now leaving 15:45 (25m late) from London." -->
+    <string name="alert_delayed_departure">Now leaving %1$s (%2$s late) from %3$s.</string>
+    <string name="alert_delayed_arrival">Now arriving %1$s (%2$s late) in %3$s.</string>
+    <string name="alert_on_time_title">%1$s back on time</string>
+    <string name="alert_on_time_text">Leaving at %1$s as planned.</string>
+    <string name="alert_schedule_title">%1$s schedule change</string>
+    <string name="alert_schedule_text">The airline moved departure from %1$s to %2$s.</string>
+    <string name="alert_gate_announced_title">%1$s gate announced</string>
+    <string name="alert_gate_announced_text">Gate %1$s.</string>
+    <string name="alert_gate_change_title">%1$s gate change</string>
+    <string name="alert_gate_change_text">Now gate %1$s (was %2$s).</string>
+    <string name="alert_terminal_title">%1$s terminal change</string>
+    <string name="alert_terminal_text">Now Terminal %1$s (was %2$s).</string>
+    <string name="alert_boarding_title">%1$s is boarding</string>
+    <string name="alert_boarding_gate">Gate %1$s. Leaves at %2$s.</string>
+    <string name="alert_boarding_no_gate">Leaves at %1$s.</string>
+    <string name="alert_departed_title">%1$s has left the gate</string>
+    <string name="alert_departed_text">Due in at %1$s in %2$s.</string>
+    <string name="alert_landed_title">%1$s has landed</string>
+    <string name="alert_landed_text">Landed in %1$s.</string>
+    <string name="alert_arrived_title">%1$s is at the gate</string>
+    <string name="alert_arrived_text">Arrived in %1$s at %2$s.</string>
+    <string name="alert_baggage_title">%1$s baggage</string>
+    <string name="alert_baggage_text">Bags on belt %1$s.</string>
+    <string name="alert_cancelled_title">%1$s cancelled</string>
+    <string name="alert_cancelled_text">Your flight from %1$s to %2$s has been cancelled.</string>
+    <string name="alert_diverted_title">%1$s diverted</string>
+    <string name="alert_diverted_text">Now heading to %1$s (%2$s) instead of %3$s.</string>
+    <!-- e.g. "Connection at risk in Amsterdam" -->
+    <string name="alert_connection_title">Connection at risk in %1$s</string>
+    <!-- e.g. "KL 1008 is late: 30m to make KL 643." -->
+    <string name="alert_connection_text">%1$s is late: %2$s to make %3$s.</string>
+
+    <!-- Live Update (ongoing journey notification) -->
+    <!-- e.g. "BA 283 · LHR → LAX" -->
+    <string name="live_title">%1$s · %2$s → %3$s</string>
+    <string name="live_leaves">Leaves %1$s</string>
+    <string name="live_gate">Gate %1$s</string>
+    <string name="live_late">%1$s late</string>
+    <string name="live_boarding">Boarding</string>
+    <string name="live_taxiing">Taxiing</string>
+    <!-- e.g. "Lands 17:25 in Los Angeles" -->
+    <string name="live_in_air">Lands %1$s in %2$s</string>
+    <string name="live_diverted">Diverted to %1$s</string>
+    <string name="live_diverted_chip">Diverted</string>
+    <string name="live_landed">Landed · heading to the gate</string>
+    <string name="live_landed_chip">Landed</string>
+    <string name="live_at_gate">At gate %1$s</string>
+    <string name="live_arrived">Arrived</string>
+    <string name="live_arrived_chip">Arrived</string>
+    <string name="live_baggage">Bags on belt %1$s</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_ok">OK</string>
     <string name="action_save">Save</string>
