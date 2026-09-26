@@ -6,6 +6,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.jared.flights.core.data.FlightRepository
 import com.jared.flights.core.data.SyncStatus
+import com.jared.flights.core.data.timemachine.TimeMachine
+import com.jared.flights.core.data.timemachine.TimeMachineState
+import com.jared.flights.ui.TimeMachineActions
 import com.jared.flights.core.model.Connection
 import com.jared.flights.core.model.Flight
 import com.jared.flights.navigation.FlightDetailRoute
@@ -38,6 +41,7 @@ sealed interface FlightDetailUiState {
 class FlightDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: FlightRepository,
+    private val timeMachine: TimeMachine,
     clock: Clock,
 ) : ViewModel() {
 
@@ -68,6 +72,18 @@ class FlightDetailViewModel @Inject constructor(
         )
 
     /** "These aren't connecting": the next flight becomes its own trip. */
+    /** Debug builds: the time machine, for when this is the FM 100 test flight. */
+    val timeMachineState: StateFlow<TimeMachineState> = timeMachine.state
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TimeMachineState())
+
+    val timeMachineActions = TimeMachineActions(
+        start = { viewModelScope.launch { timeMachine.start() } },
+        next = { viewModelScope.launch { timeMachine.next() } },
+        addDelay = { viewModelScope.launch { timeMachine.addDelay() } },
+        changeGate = { viewModelScope.launch { timeMachine.changeGate() } },
+        stop = { viewModelScope.launch { timeMachine.stop() } },
+    )
+
     fun splitFromNext(nextFlightId: String) {
         viewModelScope.launch { repository.splitTripBefore(nextFlightId) }
     }

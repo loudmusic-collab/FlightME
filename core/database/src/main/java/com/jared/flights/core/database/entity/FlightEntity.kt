@@ -14,6 +14,7 @@ data class FlightEntity(
     @Embedded(prefix = "origin_") val origin: AirportColumns,
     @Embedded(prefix = "dest_") val destination: AirportColumns,
     @Embedded(prefix = "diverted_") val divertedTo: AirportColumns?,
+    @Embedded(prefix = "boarding_") val boarding: TimesColumns?,
     @Embedded(prefix = "gate_out_") val departure: TimesColumns,
     @Embedded(prefix = "takeoff_") val takeoff: TimesColumns?,
     @Embedded(prefix = "landing_") val landing: TimesColumns?,

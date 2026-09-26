@@ -56,6 +56,27 @@
     <string name="dev_simulate_offline">Simulate offline</string>
     <string name="dev_simulate_offline_hint">Mock data stops arriving, as if there were no signal.</string>
 
+    <!-- Time machine (debug builds only) -->
+    <string name="tm_title">Time machine</string>
+    <string name="tm_intro">Adds test flight FM 100 London → Edinburgh, which you can step through its whole journey.</string>
+    <string name="tm_start">Add test flight FM 100</string>
+    <!-- e.g. "Now: Boarding" -->
+    <string name="tm_now">Now: %1$s</string>
+    <!-- e.g. "delayed 30 min" -->
+    <string name="tm_delayed_by">delayed %1$d min</string>
+    <string name="tm_next">Next step ▶</string>
+    <string name="tm_delay">+15 min delay</string>
+    <string name="tm_gate">Change gate</string>
+    <string name="tm_restart">Start over</string>
+    <string name="tm_remove">Remove</string>
+    <string name="tm_step_scheduled">Scheduled (leaves in 45 min)</string>
+    <string name="tm_step_boarding">Boarding</string>
+    <string name="tm_step_left_gate">Left the gate</string>
+    <string name="tm_step_took_off">Just took off</string>
+    <string name="tm_step_halfway">Halfway there</string>
+    <string name="tm_step_landed">Landed</string>
+    <string name="tm_step_at_gate">At the gate</string>
+
     <!-- Flight detail -->
     <string name="detail_not_found_title">Flight not found</string>
     <string name="detail_not_found_message">It may no longer be tracked.</string>
@@ -107,6 +128,8 @@
     <string name="connection_missed">Missed</string>
 
     <!-- Timeline steps: before and after they happen -->
+    <string name="milestone_boarding">Boarding starts</string>
+    <string name="milestone_boarding_done">Boarding started</string>
     <string name="milestone_gate_out">Leaves gate</string>
     <string name="milestone_gate_out_done">Left gate</string>
     <string name="milestone_takeoff">Takes off</string>
@@ -118,7 +141,10 @@
     <string name="time_actual">Actual</string>
     <string name="time_estimated">Estimated</string>
     <string name="time_scheduled">Scheduled</string>
+    <!-- Boarding time we estimated ourselves (30 min before departure) -->
+    <string name="time_typical">Typical</string>
     <!-- Between timeline steps -->
+    <string name="segment_boarding">%1$s boarding</string>
     <string name="segment_taxi">%1$s taxi</string>
     <string name="segment_in_air">%1$s in the air</string>
     <string name="segment_gate_to_gate">%1$s gate to gate</string>

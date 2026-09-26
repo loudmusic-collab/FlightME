@@ -19,6 +19,7 @@ class MappersTest {
     private val everythingSet = Flight(
         id = "KL1071-test", airlineIata = "KL", airlineName = "KLM", flightNumber = "1071",
         origin = ams, destination = man, divertedTo = lpl,
+        boarding = FlightTimes(t0.minusSeconds(1800), actual = t0.minusSeconds(1500)),
         departure = FlightTimes(t0, actual = t0.plusSeconds(900)),
         takeoff = FlightTimes(t0.plusSeconds(600), estimated = t0.plusSeconds(1500)),
         landing = FlightTimes(t0.plusSeconds(4000)),
@@ -34,7 +35,7 @@ class MappersTest {
 
     @Test fun `optional fields can be empty`() {
         val minimal = everythingSet.copy(
-            divertedTo = null, takeoff = null, landing = null,
+            divertedTo = null, boarding = null, takeoff = null, landing = null,
             departureTerminal = null, departureGate = null, arrivalTerminal = null,
             arrivalGate = null, baggageClaim = null, aircraftType = null,
         )

@@ -16,6 +16,10 @@ enum class FlightStatus {
     DIVERTED,
     ;
 
+    /** True once boarding has begun (or the flight has gone past it). */
+    val hasStartedBoarding: Boolean
+        get() = this == BOARDING || hasDeparted
+
     /** True once the plane has left the departure gate. */
     val hasDeparted: Boolean
         get() = this in setOf(DEPARTED, EN_ROUTE, LANDED, ARRIVED, DIVERTED)

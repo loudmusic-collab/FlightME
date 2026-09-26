@@ -24,6 +24,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -38,11 +39,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jared.flights.BuildConfig
 import com.jared.flights.R
 import com.jared.flights.core.designsystem.component.EmptyState
 import com.jared.flights.core.designsystem.icon.FlightMeIcons
 import com.jared.flights.core.designsystem.theme.FlightMeTheme
 import com.jared.flights.core.data.SyncStatus
+import com.jared.flights.core.data.timemachine.TIME_MACHINE_FLIGHT_ID
 import com.jared.flights.core.model.Airport
 import com.jared.flights.core.model.Connection
 import com.jared.flights.core.model.Flight
@@ -57,6 +60,7 @@ import com.jared.flights.ui.ConnectionRow
 import com.jared.flights.ui.FlightStatusLabel
 import com.jared.flights.ui.OfflineNote
 import com.jared.flights.ui.RouteLine
+import com.jared.flights.ui.TimeMachineControls
 import com.jared.flights.ui.arrivalDayOffset
 import com.jared.flights.ui.dateLabel
 import com.jared.flights.ui.formatDuration
@@ -84,15 +88,33 @@ fun FlightDetailScreen(
                 title = stringResource(R.string.detail_not_found_title),
                 message = stringResource(R.string.detail_not_found_message),
             )
-            is FlightDetailUiState.Success -> FlightDetailContent(
-                flight = state.flight,
-                previous = state.previous,
-                next = state.next,
-                syncStatus = state.syncStatus,
-                now = state.now,
-                onFlightClick = onFlightClick,
-                onSplit = viewModel::splitFromNext,
-            )
+            is FlightDetailUiState.Success -> {
+                Box(Modifier.weight(1f)) {
+                    FlightDetailContent(
+                        flight = state.flight,
+                        previous = state.previous,
+                        next = state.next,
+                        syncStatus = state.syncStatus,
+                        now = state.now,
+                        onFlightClick = onFlightClick,
+                        onSplit = viewModel::splitFromNext,
+                    )
+                }
+                // Debug builds: step the FM 100 test flight from its own screen.
+                if (BuildConfig.DEBUG && state.flight.id == TIME_MACHINE_FLIGHT_ID) {
+                    val tmState by viewModel.timeMachineState.collectAsStateWithLifecycle()
+                    Surface(color = MaterialTheme.colorScheme.surfaceVariant) {
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp, vertical = 12.dp),
+                        ) {
+                            Text(stringResource(R.string.tm_title), style = MaterialTheme.typography.labelLarge)
+                            TimeMachineControls(tmState, viewModel.timeMachineActions)
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -242,7 +264,9 @@ private fun journeyFacts(flight: Flight): String {
 }
 
 /**
- * The four steps as a vertical line of dots:
+ * The steps as a vertical line of dots:
+ *   ●  Boarding started 03:30  04:45
+ *   │  30m boarding
  *   ●  Left gate        04:00  05:15
  *   │  12m taxi
  *   ○  Takes off        04:12  05:27
@@ -334,6 +358,7 @@ private fun TimelineDot(done: Boolean) {
 @Composable
 private fun milestoneLabel(m: Milestone): String = stringResource(
     when (m.type) {
+        MilestoneType.BOARDING -> if (m.done) R.string.milestone_boarding_done else R.string.milestone_boarding
         MilestoneType.GATE_OUT -> if (m.done) R.string.milestone_gate_out_done else R.string.milestone_gate_out
         MilestoneType.TAKEOFF -> if (m.done) R.string.milestone_takeoff_done else R.string.milestone_takeoff
         MilestoneType.LANDING -> if (m.done) R.string.milestone_landing_done else R.string.milestone_landing
@@ -341,11 +366,12 @@ private fun milestoneLabel(m: Milestone): String = stringResource(
     },
 )
 
-/** Where a time comes from: "Actual", "Estimated" or "Scheduled". */
+/** Where a time comes from: "Actual", "Estimated", "Scheduled", or "Typical" (our own estimate). */
 @Composable
 private fun timeKind(m: Milestone, cancelled: Boolean): String = stringResource(
     when {
         cancelled -> R.string.time_scheduled
+        m.isTypicalEstimate -> R.string.time_typical
         m.times.actual != null -> R.string.time_actual
         m.times.estimated != null -> R.string.time_estimated
         else -> R.string.time_scheduled
@@ -357,6 +383,7 @@ private fun timeKind(m: Milestone, cancelled: Boolean): String = stringResource(
 private fun segmentLabel(from: Milestone, to: Milestone): String {
     val duration = formatDuration(durationBetween(from, to))
     return when {
+        from.type == MilestoneType.BOARDING -> stringResource(R.string.segment_boarding, duration)
         from.type == MilestoneType.TAKEOFF -> stringResource(R.string.segment_in_air, duration)
         from.type == MilestoneType.GATE_OUT && to.type == MilestoneType.GATE_IN ->
             stringResource(R.string.segment_gate_to_gate, duration)

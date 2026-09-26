@@ -66,9 +66,10 @@ class MockFlightDataSourceTest {
         flights.forEach { flight ->
             val done = flight.timeline.map { it.done }
             val expected = when (flight.status) {
-                FlightStatus.SCHEDULED, FlightStatus.BOARDING, FlightStatus.CANCELLED -> listOf(false, false, false, false)
-                FlightStatus.EN_ROUTE, FlightStatus.DIVERTED -> listOf(true, true, false, false)
-                FlightStatus.ARRIVED -> listOf(true, true, true, true)
+                FlightStatus.SCHEDULED, FlightStatus.CANCELLED -> listOf(false, false, false, false, false)
+                FlightStatus.BOARDING -> listOf(true, false, false, false, false)
+                FlightStatus.EN_ROUTE, FlightStatus.DIVERTED -> listOf(true, true, true, false, false)
+                FlightStatus.ARRIVED -> listOf(true, true, true, true, true)
                 else -> done
             }
             assertEquals(flight.ident, expected, done)

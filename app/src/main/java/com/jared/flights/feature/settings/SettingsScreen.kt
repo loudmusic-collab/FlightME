@@ -25,6 +25,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jared.flights.BuildConfig
 import com.jared.flights.R
+import com.jared.flights.ui.TimeMachineControls
 
 @Composable
 fun SettingsScreen(
@@ -32,6 +33,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val simulateOffline by viewModel.simulateOffline.collectAsStateWithLifecycle()
+    val timeMachineState by viewModel.timeMachineState.collectAsStateWithLifecycle()
 
     Column(
         modifier
@@ -80,6 +82,11 @@ fun SettingsScreen(
                 // onCheckedChange = null: the row above handles taps.
                 Switch(checked = simulateOffline, onCheckedChange = null)
             }
+
+            Spacer(Modifier.height(16.dp))
+            Text(stringResource(R.string.tm_title), style = MaterialTheme.typography.bodyLarge)
+            Spacer(Modifier.height(4.dp))
+            TimeMachineControls(timeMachineState, viewModel.timeMachineActions)
         }
     }
 }

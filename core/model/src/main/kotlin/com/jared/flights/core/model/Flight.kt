@@ -17,6 +17,8 @@ data class Flight(
     /** Arriving at the destination gate. */
     val arrival: FlightTimes,
     val status: FlightStatus,
+    /** Boarding starts. Null if the data source doesn't give it (see [boardingOrTypical]). */
+    val boarding: FlightTimes? = null,
     /** Wheels off the runway. Null if the data source doesn't give it. */
     val takeoff: FlightTimes? = null,
     /** Wheels on the runway at the destination. Null if the data source doesn't give it. */

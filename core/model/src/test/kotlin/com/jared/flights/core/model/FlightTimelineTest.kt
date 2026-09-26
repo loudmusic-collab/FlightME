@@ -28,24 +28,48 @@ class FlightTimelineTest {
         status = FlightStatus.EN_ROUTE,
     )
 
-    @Test fun `four milestones in order`() {
+    @Test fun `five milestones in order`() {
         assertEquals(
-            listOf(MilestoneType.GATE_OUT, MilestoneType.TAKEOFF, MilestoneType.LANDING, MilestoneType.GATE_IN),
+            listOf(
+                MilestoneType.BOARDING, MilestoneType.GATE_OUT, MilestoneType.TAKEOFF,
+                MilestoneType.LANDING, MilestoneType.GATE_IN,
+            ),
             inAir.timeline.map { it.type },
         )
     }
 
     @Test fun `milestones with an actual time are done`() {
-        assertEquals(listOf(true, true, false, false), inAir.timeline.map { it.done })
+        assertEquals(listOf(true, true, true, false, false), inAir.timeline.map { it.done })
     }
 
-    @Test fun `without runway times only the gate milestones remain`() {
+    @Test fun `without runway times only boarding and the gate milestones remain`() {
         val gateOnly = inAir.copy(takeoff = null, landing = null)
-        assertEquals(listOf(MilestoneType.GATE_OUT, MilestoneType.GATE_IN), gateOnly.timeline.map { it.type })
+        assertEquals(
+            listOf(MilestoneType.BOARDING, MilestoneType.GATE_OUT, MilestoneType.GATE_IN),
+            gateOnly.timeline.map { it.type },
+        )
+    }
+
+    @Test fun `boarding is estimated 30 minutes before departure when not given`() {
+        val scheduled = inAir.copy(status = FlightStatus.SCHEDULED, departure = FlightTimes(min(0), estimated = min(20)))
+        val boarding = scheduled.timeline.first()
+        assertEquals(min(-30), boarding.times.scheduled)
+        assertEquals(min(-10), boarding.times.best) // follows the 20 min departure delay
+        assertFalse(boarding.done)
+    }
+
+    @Test fun `boarding is done once the status says boarding`() {
+        val boarding = inAir.copy(status = FlightStatus.BOARDING, departure = FlightTimes(min(0)))
+        assertTrue(boarding.timeline.first().done)
+    }
+
+    @Test fun `a given boarding time is used as is`() {
+        val given = inAir.copy(boarding = FlightTimes(min(-40), actual = min(-38)))
+        assertEquals(min(-38), given.timeline.first().times.best)
     }
 
     @Test fun `taxi and air times use the best times`() {
-        val (gateOut, takeoff, landing) = inAir.timeline
+        val (_, gateOut, takeoff, landing) = inAir.timeline
         assertEquals(Duration.ofMinutes(15), durationBetween(gateOut, takeoff)) // 5 → 20
         assertEquals(Duration.ofMinutes(60), durationBetween(takeoff, landing)) // 20 → 80
     }
@@ -53,7 +77,7 @@ class FlightTimelineTest {
     @Test fun `diverted flights land at the diversion airport`() {
         val diverted = inAir.copy(status = FlightStatus.DIVERTED, divertedTo = gla)
         assertEquals(gla, diverted.timeline.last().airport)
-        assertTrue(diverted.timeline.first().airport == lhr)
+        assertTrue(diverted.timeline[1].airport == lhr)
         assertFalse(diverted.timeline.last().done)
     }
 }
