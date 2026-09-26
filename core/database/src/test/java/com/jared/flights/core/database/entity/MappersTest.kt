@@ -4,6 +4,7 @@ import com.jared.flights.core.model.Airport
 import com.jared.flights.core.model.Flight
 import com.jared.flights.core.model.FlightStatus
 import com.jared.flights.core.model.FlightTimes
+import com.jared.flights.core.model.LatLon
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.Instant
@@ -12,7 +13,7 @@ import java.time.ZoneId
 class MappersTest {
 
     private val t0 = Instant.parse("2026-09-26T10:00:00Z")
-    private val ams = Airport("AMS", "EHAM", "Schiphol", "Amsterdam", ZoneId.of("Europe/Amsterdam"))
+    private val ams = Airport("AMS", "EHAM", "Schiphol", "Amsterdam", ZoneId.of("Europe/Amsterdam"), LatLon(52.3105, 4.7683))
     private val man = Airport("MAN", "EGCC", "Manchester", "Manchester", ZoneId.of("Europe/London"))
     private val lpl = Airport("LPL", "EGGP", "Liverpool John Lennon", "Liverpool", ZoneId.of("Europe/London"))
 

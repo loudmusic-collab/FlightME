@@ -17,6 +17,7 @@ kotlinxCoroutines = "1.11.0"
 junit = "4.13.2"
 room = "2.8.5"
 datastore = "1.2.1"
+maplibre = "13.6.1"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
@@ -43,6 +44,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+maplibre-android = { module = "org.maplibre.gl:android-sdk", version.ref = "maplibre" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
 

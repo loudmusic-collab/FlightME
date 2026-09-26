@@ -5,12 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.jared.flights.core.data.FlightRepository
+import com.jared.flights.core.data.LivePositionTracker
 import com.jared.flights.core.data.SyncStatus
 import com.jared.flights.core.data.timemachine.TimeMachine
 import com.jared.flights.core.data.timemachine.TimeMachineState
 import com.jared.flights.ui.TimeMachineActions
 import com.jared.flights.core.model.Connection
 import com.jared.flights.core.model.Flight
+import com.jared.flights.core.model.LivePosition
 import com.jared.flights.navigation.FlightDetailRoute
 import com.jared.flights.ui.clockTicker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,6 +44,7 @@ class FlightDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: FlightRepository,
     private val timeMachine: TimeMachine,
+    positions: LivePositionTracker,
     clock: Clock,
 ) : ViewModel() {
 
@@ -71,7 +74,10 @@ class FlightDetailViewModel @Inject constructor(
             initialValue = FlightDetailUiState.Loading,
         )
 
-    /** "These aren't connecting": the next flight becomes its own trip. */
+    /** Where the plane is, for the map preview. Asked for once a minute while the screen is visible. */
+    val livePosition: StateFlow<LivePosition?> = positions.observe(flightId)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
     /** The user's booking reference for this flight (saved on the phone only), or null. */
     val bookingReference: StateFlow<String?> = repository.observeBookingReference(flightId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
@@ -92,6 +98,7 @@ class FlightDetailViewModel @Inject constructor(
         stop = { viewModelScope.launch { timeMachine.stop() } },
     )
 
+    /** "These aren't connecting": the next flight becomes its own trip. */
     fun splitFromNext(nextFlightId: String) {
         viewModelScope.launch { repository.splitTripBefore(nextFlightId) }
     }

@@ -73,6 +73,19 @@
     <string name="booking_reference_add">Add booking reference</string>
     <string name="detail_remove_flight">Remove flight</string>
     <string name="airport_map">Airport map</string>
+
+    <!-- Live map -->
+    <!-- Required credit for the map data (OpenStreetMap licence) -->
+    <string name="map_attribution">© OpenMapTiles © OpenStreetMap contributors</string>
+    <string name="map_altitude">Altitude</string>
+    <string name="map_speed">Speed</string>
+    <string name="map_lands_in">Lands in</string>
+    <!-- e.g. "36,000 ft" -->
+    <string name="map_altitude_feet">%1$s ft</string>
+    <!-- e.g. "890 km/h" -->
+    <string name="map_speed_kmh">%1$s km/h</string>
+    <!-- e.g. "On the ground in London" -->
+    <string name="map_on_ground">On the ground in %1$s</string>
     <!-- e.g. "Map of Amsterdam airport" -->
     <string name="airport_map_of">Map of %1$s airport</string>
 

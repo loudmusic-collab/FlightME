@@ -56,6 +56,7 @@ import com.jared.flights.core.data.timemachine.TIME_MACHINE_FLIGHT_ID
 import com.jared.flights.core.model.Airport
 import com.jared.flights.core.model.Connection
 import com.jared.flights.core.model.Flight
+import com.jared.flights.core.model.LivePosition
 import com.jared.flights.core.model.FlightStatus
 import com.jared.flights.core.model.Milestone
 import com.jared.flights.core.model.MilestoneType
@@ -69,6 +70,8 @@ import com.jared.flights.ui.FlightStatusLabel
 import com.jared.flights.ui.OfflineNote
 import com.jared.flights.ui.RouteLine
 import com.jared.flights.ui.TimeMachineControls
+import com.jared.flights.ui.map.FlightMapData
+import com.jared.flights.ui.map.MapPreviewCard
 import com.jared.flights.ui.arrivalDayOffset
 import com.jared.flights.ui.dateLabel
 import com.jared.flights.ui.formatDuration
@@ -84,11 +87,14 @@ fun FlightDetailScreen(
     onFlightClick: (flightId: String) -> Unit,
     /** Remove this flight: [flightIds] and a label like "BA 283" for the Undo message. */
     onRemove: (flightIds: List<String>, label: String) -> Unit,
+    /** Open the full-screen live map for this flight. */
+    onOpenMap: (flightId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: FlightDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val bookingReference by viewModel.bookingReference.collectAsStateWithLifecycle()
+    val livePosition by viewModel.livePosition.collectAsStateWithLifecycle()
     Column(modifier.fillMaxSize()) {
         IconButton(onClick = onBack, modifier = Modifier.padding(start = 4.dp, top = 4.dp)) {
             Icon(FlightMeIcons.ArrowBack, contentDescription = stringResource(R.string.action_back))
@@ -113,6 +119,8 @@ fun FlightDetailScreen(
                         bookingReference = bookingReference,
                         onSetBookingReference = viewModel::setBookingReference,
                         onRemove = { onRemove(listOf(state.flight.id), "${state.flight.airlineIata} ${state.flight.flightNumber}") },
+                        livePosition = livePosition,
+                        onOpenMap = { onOpenMap(state.flight.id) },
                     )
                 }
                 // Debug builds: step the FM 100 test flight from its own screen.
@@ -146,6 +154,8 @@ private fun FlightDetailContent(
     bookingReference: String?,
     onSetBookingReference: (String?) -> Unit,
     onRemove: () -> Unit,
+    livePosition: LivePosition?,
+    onOpenMap: () -> Unit,
 ) {
     val cancelled = flight.status == FlightStatus.CANCELLED
     Column(
@@ -192,6 +202,14 @@ private fun FlightDetailContent(
         }
         Spacer(Modifier.height(4.dp))
         SmallText(journeyFacts(flight))
+
+        // Small live map; tap it for the full-screen map.
+        val mapFrom = flight.origin.location
+        val mapTo = (flight.divertedTo ?: flight.destination).location
+        if (mapFrom != null && mapTo != null) {
+            Spacer(Modifier.height(16.dp))
+            MapPreviewCard(FlightMapData(mapFrom, mapTo, livePosition), onClick = onOpenMap)
+        }
 
         // The user's own booking reference (saved on the phone only).
         Spacer(Modifier.height(16.dp))

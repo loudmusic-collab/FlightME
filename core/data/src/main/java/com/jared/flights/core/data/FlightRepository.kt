@@ -9,6 +9,7 @@ import com.jared.flights.core.database.entity.TripSplitEntity
 import com.jared.flights.core.database.entity.toModel
 import com.jared.flights.core.model.Flight
 import com.jared.flights.core.model.FlightNumber
+import com.jared.flights.core.model.LivePosition
 import com.jared.flights.core.model.Trip
 import com.jared.flights.core.model.groupIntoTrips
 import kotlinx.coroutines.flow.Flow
@@ -68,6 +69,12 @@ interface FlightRepository {
 
     /** The user's booking reference for a flight, if they entered one. */
     fun observeBookingReference(flightId: String): Flow<String?>
+
+    /**
+     * Where the plane is now (live map). Call at most once a minute, only while a
+     * map is showing. Throws [java.io.IOException] if offline.
+     */
+    suspend fun fetchLivePosition(flightId: String): LivePosition?
 
     /** Save, change or (with null/blank) clear a booking reference. */
     suspend fun setBookingReference(flightId: String, reference: String?)
@@ -133,6 +140,9 @@ class DefaultFlightRepository @Inject constructor(
     } catch (e: IOException) {
         false
     }
+
+    override suspend fun fetchLivePosition(flightId: String): LivePosition? =
+        dataSource.getLivePosition(flightId)
 
     override fun observeBookingReference(flightId: String): Flow<String?> =
         bookingDao.observeReference(flightId)

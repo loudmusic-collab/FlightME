@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.maplibre.android)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

@@ -38,6 +38,9 @@ data class AirportColumns(
     val city: String,
     /** Time zone id, e.g. "Europe/London". */
     val timeZone: String,
+    /** Map position; null if unknown. */
+    val latitude: Double?,
+    val longitude: Double?,
 )
 
 /** Times as epoch milliseconds (UTC). */

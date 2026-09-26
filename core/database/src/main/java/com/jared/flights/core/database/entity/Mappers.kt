@@ -4,6 +4,7 @@ import com.jared.flights.core.model.Airport
 import com.jared.flights.core.model.Flight
 import com.jared.flights.core.model.FlightStatus
 import com.jared.flights.core.model.FlightTimes
+import com.jared.flights.core.model.LatLon
 import java.time.Instant
 import java.time.ZoneId
 
@@ -55,8 +56,12 @@ fun FlightEntity.toModel(): Flight = Flight(
     aircraftType = aircraftType,
 )
 
-private fun Airport.toColumns() = AirportColumns(iata, icao, name, city, timeZone.id)
-private fun AirportColumns.toModel() = Airport(iata, icao, name, city, ZoneId.of(timeZone))
+private fun Airport.toColumns() =
+    AirportColumns(iata, icao, name, city, timeZone.id, location?.latitude, location?.longitude)
+private fun AirportColumns.toModel() = Airport(
+    iata, icao, name, city, ZoneId.of(timeZone),
+    location = if (latitude != null && longitude != null) LatLon(latitude, longitude) else null,
+)
 
 private fun FlightTimes.toColumns() = TimesColumns(
     scheduled = scheduled.toEpochMilli(),

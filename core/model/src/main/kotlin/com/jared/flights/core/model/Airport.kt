@@ -11,4 +11,6 @@ data class Airport(
     val city: String,
     /** Local time zone. Flight times are shown in the airport's local time. */
     val timeZone: ZoneId,
+    /** Where it is on the map. Null if unknown (the map is then not shown). */
+    val location: LatLon? = null,
 )

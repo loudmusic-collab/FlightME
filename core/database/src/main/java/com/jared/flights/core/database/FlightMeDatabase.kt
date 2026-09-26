@@ -17,7 +17,7 @@ import com.jared.flights.core.database.entity.TripSplitEntity
  */
 @Database(
     entities = [FlightEntity::class, TripSplitEntity::class, SyncStateEntity::class, BookingEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = true,
 )
 abstract class FlightMeDatabase : RoomDatabase() {

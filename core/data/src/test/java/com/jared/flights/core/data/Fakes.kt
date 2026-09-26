@@ -10,6 +10,7 @@ import com.jared.flights.core.database.entity.SyncStateEntity
 import com.jared.flights.core.database.entity.TripSplitEntity
 import com.jared.flights.core.model.Flight
 import com.jared.flights.core.model.FlightNumber
+import com.jared.flights.core.model.LivePosition
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
@@ -72,6 +73,8 @@ class FakeFlightDataSource(
         tracked.update { list -> list + listOfNotNull(known.find { it.id == flightId }) }
     }
     override suspend fun untrackFlight(flightId: String) = checkOnline { tracked.update { l -> l.filterNot { it.id == flightId } } }
+
+    override suspend fun getLivePosition(flightId: String): LivePosition? = checkOnline { null }
 
     private fun <T> checkOnline(block: () -> T): T = if (online) block() else throw IOException("offline")
 }

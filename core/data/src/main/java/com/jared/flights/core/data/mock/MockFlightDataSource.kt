@@ -23,6 +23,8 @@ import com.jared.flights.core.data.DevSettings
 import com.jared.flights.core.data.timemachine.TIME_MACHINE_FLIGHT_ID
 import com.jared.flights.core.data.timemachine.buildTimeMachineFlight
 import com.jared.flights.core.model.FlightNumber
+import com.jared.flights.core.model.LivePosition
+import com.jared.flights.core.model.estimatedPositionAt
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -109,6 +111,12 @@ class MockFlightDataSource @Inject constructor(
             in builtInIds -> devSettings.updateMockRemovedIds { it + flightId }
             else -> devSettings.updateMockAddedIds { it - flightId }
         }
+    }
+
+    /** Worked out from the flight's timetable (no real positions until Phase 3). */
+    override suspend fun getLivePosition(flightId: String): LivePosition? {
+        pretendNetworkCall()
+        return trackedFlights.first().find { it.id == flightId }?.estimatedPositionAt(clock.instant())
     }
 
     /** A short wait like a real server, and fail if "Simulate offline" is on. */

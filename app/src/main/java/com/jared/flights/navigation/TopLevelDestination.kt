@@ -18,6 +18,9 @@ import kotlin.reflect.KClass
 /** Search for a flight and add it (not a tab). */
 @Serializable data object AddFlightRoute
 
+/** Full-screen live map for one flight (not a tab). */
+@Serializable data class LiveMapRoute(val flightId: String)
+
 /** The bottom-bar tabs, in display order. */
 enum class TopLevelDestination(
     val route: Any,

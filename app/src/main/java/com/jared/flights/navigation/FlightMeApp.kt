@@ -33,6 +33,7 @@ import com.jared.flights.R
 import com.jared.flights.core.designsystem.icon.FlightMeIcons
 import com.jared.flights.feature.addflight.AddFlightScreen
 import com.jared.flights.feature.flightdetail.FlightDetailScreen
+import com.jared.flights.feature.livemap.LiveMapScreen
 import com.jared.flights.feature.myflights.MyFlightsScreen
 import com.jared.flights.feature.myflights.RemoveRequest
 import com.jared.flights.feature.passport.PassportScreen
@@ -109,11 +110,15 @@ fun FlightMeApp(navController: NavHostController = rememberNavController()) {
                 FlightDetailScreen(
                     onBack = { navController.popBackStack() },
                     onFlightClick = { id -> navController.navigate(FlightDetailRoute(id)) },
+                    onOpenMap = { id -> navController.navigate(LiveMapRoute(id)) },
                     onRemove = { ids, label ->
                         pendingRemove = RemoveRequest(ids, label)
                         navController.popBackStack<MyFlightsRoute>(inclusive = false)
                     },
                 )
+            }
+            composable<LiveMapRoute> {
+                LiveMapScreen(onBack = { navController.popBackStack() })
             }
             composable<AddFlightRoute> {
                 AddFlightScreen(

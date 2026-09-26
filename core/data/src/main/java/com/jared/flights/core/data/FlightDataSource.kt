@@ -2,6 +2,7 @@ package com.jared.flights.core.data
 
 import com.jared.flights.core.model.Flight
 import com.jared.flights.core.model.FlightNumber
+import com.jared.flights.core.model.LivePosition
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
@@ -38,4 +39,12 @@ interface FlightDataSource {
 
     /** Stop tracking a flight. Throws IOException if offline. */
     suspend fun untrackFlight(flightId: String)
+
+    /**
+     * Where the plane is now, for the live map. Only asked for while a map is on
+     * screen, at most once a minute. Phase 2+: the `getLivePosition` server function,
+     * which shares one provider call per flight per minute across all users (PLAN §6).
+     * Null if unknown. Throws IOException if offline.
+     */
+    suspend fun getLivePosition(flightId: String): LivePosition?
 }
